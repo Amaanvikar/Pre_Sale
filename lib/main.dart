@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Auth/login_screen.dart';
+import 'package:pre_sale/Auth/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,6 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Pre Sale', home: LoginScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Pre Sale',
+      home: SplashScreen(),
+    );
   }
 }
