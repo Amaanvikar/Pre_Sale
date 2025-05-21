@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Screens/inquiry_from_screen.dart';
+import 'package:pre_sale/Screens/Inquiry_form/inquiry_from_screen.dart';
+import 'package:pre_sale/Screens/inquiry_list.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -40,7 +41,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _DashboardCard(
               imagePath: 'assets/images/fluent-color_list-bar-16.png',
               label: 'Inquiry List',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => InquiryListScreen()),
+                );
+              },
             ),
             _DashboardCard(
               imagePath: 'assets/images/material-icon-theme_terraform.png',

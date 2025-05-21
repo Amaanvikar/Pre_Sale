@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pre_sale/Screens/Inquiry_form/inquiry_from2_.dart';
 
 class InquiryFromScreen extends StatefulWidget {
   const InquiryFromScreen({super.key});
@@ -60,7 +61,7 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Presale',
+          'Add Enquiry',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFFDC3545),
@@ -74,6 +75,11 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
           key: _formKey,
           child: ListView(
             children: [
+              Text(
+                'Enquiry Information:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(height: 10),
               _buildDropdown("Vertical", ['Retail'], (val) => vertical = val),
               _buildTextField("Inquiry no", (val) => inquiryNo = val),
               _buildDropdown("Communication mode", [
@@ -106,8 +112,11 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Form Submitted")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => InquiryFromScreen2(),
+                          ),
                         );
                       }
                     },
