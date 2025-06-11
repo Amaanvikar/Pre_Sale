@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Screens/Inquiry_form/inquiry_from2_.dart';
+import 'package:PreSale/Screens/Inquiry_form/enquiry_from2_.dart';
 
-class InquiryFromScreen extends StatefulWidget {
-  const InquiryFromScreen({super.key});
+class EnquiryFromScreen extends StatefulWidget {
+  const EnquiryFromScreen({super.key});
 
   @override
-  State<InquiryFromScreen> createState() => _InquiryFromScreenState();
+  State<EnquiryFromScreen> createState() => _EnquiryFromScreenState();
 }
 
-class _InquiryFromScreenState extends State<InquiryFromScreen> {
+class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Form field values
   String? vertical = 'Retail';
-  String? inquiryNo;
+  String? enquiryNo;
   String? communicationMode = 'Retail';
   String? segment;
   String? subSegment;
-  DateTime inquiryDate = DateTime.now();
+  DateTime enquiryDate = DateTime.now();
   String? source;
   String? dealBy;
   String? customerType;
@@ -31,7 +31,7 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
   Future<void> _pickDateTime() async {
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: inquiryDate,
+      initialDate: enquiryDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -39,12 +39,12 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
     if (pickedDate != null) {
       final pickedTime = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(inquiryDate),
+        initialTime: TimeOfDay.fromDateTime(enquiryDate),
       );
 
       if (pickedTime != null) {
         setState(() {
-          inquiryDate = DateTime(
+          enquiryDate = DateTime(
             pickedDate.year,
             pickedDate.month,
             pickedDate.day,
@@ -62,12 +62,8 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Enquiry',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFDC3545),
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -81,7 +77,7 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
               ),
               SizedBox(height: 10),
               _buildDropdown("Vertical", ['Retail'], (val) => vertical = val),
-              _buildTextField("Inquiry no", (val) => inquiryNo = val),
+              _buildTextField("Enquiry no", (val) => enquiryNo = val),
               _buildDropdown("Communication mode", [
                 'Retail',
               ], (val) => communicationMode = val),
@@ -91,7 +87,7 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
                 selectOptions,
                 (val) => subSegment = val,
               ),
-              _buildDateTimePicker("Inquiry Date"),
+              _buildDateTimePicker("Enquiry Date"),
               _buildDropdown("Source", selectOptions, (val) => source = val),
               _buildDropdown("Deal By", selectOptions, (val) => dealBy = val),
               _buildDropdown(
@@ -110,15 +106,21 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => InquiryFromScreen2(),
-                          ),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EnquiryFromScreen2(),
+                        ),
+                      );
+                      // if (_formKey.currentState!.validate()) {
+                      //   _formKey.currentState!.save();
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => EnquiryFromScreen2(),
+                      //     ),
+                      //   );
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFDC3545),
@@ -188,7 +190,7 @@ class _InquiryFromScreenState extends State<InquiryFromScreen> {
             border: OutlineInputBorder(),
           ),
           child: Text(
-            "${inquiryDate.day}/${inquiryDate.month}/${inquiryDate.year} ${inquiryDate.hour}:${inquiryDate.minute.toString().padLeft(2, '0')}",
+            "${enquiryDate.day}/${enquiryDate.month}/${enquiryDate.year} ${enquiryDate.hour}:${enquiryDate.minute.toString().padLeft(2, '0')}",
           ),
         ),
       ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Screens/Inquiry_form/inquiry_from3.dart';
+import 'package:PreSale/Screens/Inquiry_form/enquiry_from3.dart';
 
-class InquiryFromScreen2 extends StatefulWidget {
-  const InquiryFromScreen2({super.key});
+class EnquiryFromScreen2 extends StatefulWidget {
+  const EnquiryFromScreen2({super.key});
 
   @override
-  State<InquiryFromScreen2> createState() => _InquiryFromScreen2State();
+  State<EnquiryFromScreen2> createState() => _EnquiryFromScreen2State();
 }
 
-class _InquiryFromScreen2State extends State<InquiryFromScreen2> {
+class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
   final _formKey = GlobalKey<FormState>();
 
   // Form field values
@@ -72,15 +72,21 @@ class _InquiryFromScreen2State extends State<InquiryFromScreen2> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => InquiryFromScreen3(),
-                          ),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EnquiryFromScreen3(),
+                        ),
+                      );
+                      // if (_formKey.currentState!.validate()) {
+                      //   _formKey.currentState!.save();
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => EnquiryFromScreen3(),
+                      //     ),
+                      //   );
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFDC3545),

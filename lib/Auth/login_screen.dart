@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Auth/forgot_pass_screen.dart';
-import 'package:pre_sale/Screens/dashboard_screen.dart';
+import 'package:PreSale/Auth/forgot_pass_screen.dart';
+import 'package:PreSale/Screens/dashboard_screen.dart';
 
 class LoginPage extends StatefulWidget {
   @override

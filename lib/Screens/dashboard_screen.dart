@@ -1,6 +1,8 @@
+import 'package:PreSale/Screens/follow_up_form.dart';
+import 'package:PreSale/Screens/follow_up_list.dart';
 import 'package:flutter/material.dart';
-import 'package:pre_sale/Screens/Inquiry_form/inquiry_from_screen.dart';
-import 'package:pre_sale/Screens/inquiry_list.dart';
+import 'package:PreSale/Screens/Inquiry_form/enquiry_from_screen.dart';
+import 'package:PreSale/Screens/enquiry_list.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -16,10 +18,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           'Presale',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Color(0xFFDC3545),
+            // color: Color(0xFFDC3545),
           ),
         ),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,28 +31,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             _DashboardCard(
               imagePath: 'assets/images/Vector.png',
-              label: 'Inquiry form',
+              label: 'Enquiry form',
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InquiryFromScreen()),
+                  MaterialPageRoute(builder: (context) => EnquiryFromScreen()),
                 );
               },
             ),
             _DashboardCard(
               imagePath: 'assets/images/fluent-color_list-bar-16.png',
-              label: 'Inquiry List',
+              label: 'Enquiry List',
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InquiryListScreen()),
+                  MaterialPageRoute(builder: (context) => EnquiryListScreen()),
                 );
               },
             ),
             _DashboardCard(
               imagePath: 'assets/images/material-icon-theme_terraform.png',
               label: 'Follow Up',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FollowUplist()),
+                );
+              },
             ),
             _DashboardCard(
               imagePath: 'assets/images/fluent-color_people-sync-24.png',

@@ -1,4 +1,4 @@
-# pre_sale
+# PreSale
 
 A new Flutter project.
 

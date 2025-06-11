@@ -1,12 +1,13 @@
+import 'package:PreSale/Screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class InquiryFromScreen3 extends StatefulWidget {
+class EnquiryFromScreen3 extends StatefulWidget {
   @override
-  State<InquiryFromScreen3> createState() => _InquiryFromScreen3State();
+  State<EnquiryFromScreen3> createState() => _EnquiryFromScreen3State();
 }
 
-class _InquiryFromScreen3State extends State<InquiryFromScreen3> {
+class _EnquiryFromScreen3State extends State<EnquiryFromScreen3> {
   final _formKey = GlobalKey<FormState>();
 
   // Current selected values
@@ -168,12 +169,18 @@ class _InquiryFromScreen3State extends State<InquiryFromScreen3> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Form Submitted")),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardScreen(),
+                        ),
+                      );
+                      // if (_formKey.currentState!.validate()) {
+                      //   _formKey.currentState!.save();
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(content: Text("Form Submitted")),
+                      //   );
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFDC3545),
