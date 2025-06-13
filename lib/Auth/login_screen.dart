@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgot_pass_screen.dart';
 import 'package:PreSale/Screens/dashboard_screen.dart';
@@ -8,7 +10,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController captchaController = TextEditingController();
   bool rememberMe = false;
+
+  String captchaCode = '';
+
+  String generateCaptcha(int length) {
+    const chars = 'AaBbCcDdEeFfGgHh1234567890';
+    final rand = Random();
+    return List.generate(
+      length,
+      (index) => chars[rand.nextInt(chars.length)],
+    ).join();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    captchaCode = generateCaptcha(6);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 20),
                     // Username
                     TextField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.person,
@@ -63,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 16),
                     // Password
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock, color: Color(0xFFDC3545)),
@@ -89,13 +113,24 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         children: [
                           Text(
-                            "0 0 h 2 1 ʃ",
-                            style: TextStyle(letterSpacing: 4),
+                            captchaCode,
+                            style: TextStyle(letterSpacing: 4, fontSize: 24),
+                          ),
+                          Spacer(),
+                          IconButton(
+                            icon: Icon(Icons.refresh),
+                            color: Colors.teal,
+                            onPressed: () {
+                              setState(() {
+                                captchaCode = generateCaptcha(6);
+                              });
+                            },
                           ),
                         ],
                       ),
                     ),
                     TextField(
+                      controller: captchaController,
                       decoration: InputDecoration(
                         hintText: 'Enter captcha text',
                         border: UnderlineInputBorder(),
