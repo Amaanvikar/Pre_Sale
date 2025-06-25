@@ -1,3 +1,4 @@
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Screens/Inquiry_form/enquiry_from3.dart';
 
@@ -62,7 +63,7 @@ class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
                       Navigator.pop(context); // Go back to previous form
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFDC3545),
+                      backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),
                     ),
                     child: const Text(
@@ -89,7 +90,7 @@ class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
                       // }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFDC3545),
+                      backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),
                     ),
                     child: Text(

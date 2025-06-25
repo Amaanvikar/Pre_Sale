@@ -1,3 +1,4 @@
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:PreSale/Screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -159,7 +160,7 @@ class _EnquiryFromScreen3State extends State<EnquiryFromScreen3> {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFDC3545),
+                      backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),
                     ),
                     child: const Text(
@@ -183,7 +184,7 @@ class _EnquiryFromScreen3State extends State<EnquiryFromScreen3> {
                       // }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFDC3545),
+                      backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),
                     ),
                     child: const Text(

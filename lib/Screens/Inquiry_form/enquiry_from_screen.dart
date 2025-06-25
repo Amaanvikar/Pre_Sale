@@ -1,3 +1,6 @@
+import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/Helper/db_helper.dart';
+import 'package:PreSale/Api/Model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Screens/Inquiry_form/enquiry_from2_.dart';
 
@@ -9,7 +12,12 @@ class EnquiryFromScreen extends StatefulWidget {
 }
 
 class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
+  final TextEditingController userIdController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String selectedCategory = 'Individual';
+
+  List<Enquiry> allEnquiries = [];
 
   // Form field values
   String? vertical = 'Retail';
@@ -56,6 +64,32 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
     }
   }
 
+  void _saveToLocalDB() async {
+    if (_formKey.currentState!.validate()) {
+      final enquiry = Enquiry(
+        id: int.tryParse(userIdController.text) ?? 0,
+        title: titleController.text.trim(),
+        category: selectedCategory,
+      );
+      await DBHelper().insertEnquiry(enquiry);
+      _fetchLocalData(); // Refresh the dropdown
+      titleController.clear();
+    }
+  }
+
+  void _fetchLocalData() async {
+    final data = await DBHelper().getEnquiries();
+    setState(() {
+      allEnquiries = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLocalData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +110,12 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(height: 10),
+              _buildTextField("Title", (val) => titleController.text = val!),
+              _buildDropdown("Category", [
+                'Individual',
+                'Corporate',
+              ], (val) => selectedCategory = val!),
+
               _buildDropdown("Vertical", ['Retail'], (val) => vertical = val),
               _buildTextField("Enquiry no", (val) => enquiryNo = val),
               _buildDropdown("Communication mode", [
@@ -102,8 +142,16 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  ElevatedButton(
+                    onPressed: _saveToLocalDB,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                    ),
+                    child: Text("Save Locally"),
+                  ),
+
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -122,8 +170,9 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                       //   );
                       // }
                     },
+
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFDC3545),
+                      backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),
                     ),
                     child: Text(
@@ -133,6 +182,8 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                   ),
                 ],
               ),
+              SizedBox(height: 20),
+              _buildSavedEnquiryDropdown(),
             ],
           ),
         ),
@@ -194,6 +245,22 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSavedEnquiryDropdown() {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(labelText: 'Saved Enquiries'),
+      items:
+          allEnquiries.map((enquiry) {
+            return DropdownMenuItem<String>(
+              value: enquiry.title,
+              child: Text('${enquiry.title} (${enquiry.category})'),
+            );
+          }).toList(),
+      onChanged: (value) {
+        print("Selected enquiry: $value");
+      },
     );
   }
 }

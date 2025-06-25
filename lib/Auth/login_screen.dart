@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgot_pass_screen.dart';
 import 'package:PreSale/Screens/dashboard_screen.dart';
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFDC3545),
+                        color: kPrimaryColor,
                       ),
                     ),
                     SizedBox(height: 8),
@@ -74,11 +75,9 @@ class _LoginPageState extends State<LoginPage> {
                     // Username
                     TextField(
                       controller: usernameController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Color(0xFFDC3545),
-                        ),
+                        prefixIcon: Icon(Icons.person, color: kPrimaryColor),
                         labelText: 'Username',
                         border: UnderlineInputBorder(),
                       ),
@@ -89,14 +88,14 @@ class _LoginPageState extends State<LoginPage> {
                       controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock, color: Color(0xFFDC3545)),
+                        prefixIcon: Icon(Icons.lock, color: kPrimaryColor),
                         labelText: 'Password',
                         border: UnderlineInputBorder(),
                       ),
                     ),
                     SizedBox(height: 16),
-                    // Captcha
-                    Text(
+                    /* Captcha
+                      Text(
                       'Captcha',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -136,7 +135,8 @@ class _LoginPageState extends State<LoginPage> {
                         border: UnderlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    */
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Checkbox(
@@ -147,10 +147,10 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                         ),
-                        Text("Remember me"),
+                        const Text("Remember me"),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -161,14 +161,14 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFDC3545),
+                        backgroundColor: kPrimaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: Text(
+                        child: const Text(
                           "LOGIN",
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
@@ -186,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Text(
                         "Forgot password ?",
-                        style: TextStyle(color: Color(0xFFDC3545)),
+                        style: TextStyle(color: kPrimaryColor),
                       ),
                     ),
                   ],

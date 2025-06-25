@@ -1,3 +1,4 @@
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:PreSale/Screens/follow_up_form.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class _FollowUplistState extends State<FollowUplist> {
             margin: const EdgeInsets.symmetric(vertical: 8),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Color(0xFFDC3545)),
+              side: const BorderSide(color: kPrimaryColor),
             ),
             child: Stack(
               children: [
@@ -53,7 +54,7 @@ class _FollowUplistState extends State<FollowUplist> {
                         item['enquiryNo'] ?? '',
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Color(0xFFDC3545),
+                          color: kPrimaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -111,7 +112,7 @@ class _FollowUplistState extends State<FollowUplist> {
       ),
       // Add button
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFFDC3545),
+        backgroundColor: kPrimaryColor,
         onPressed: () {
           Navigator.push(
             context,

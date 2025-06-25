@@ -1,3 +1,4 @@
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:flutter/material.dart';
 
 class EnquiryListScreen extends StatelessWidget {
@@ -34,7 +35,7 @@ class EnquiryListScreen extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 8),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Color(0xFFDC3545)),
+              side: const BorderSide(color: kPrimaryColor),
             ),
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -46,7 +47,7 @@ class EnquiryListScreen extends StatelessWidget {
                     item['enquiryNo'] ?? '',
                     style: const TextStyle(
                       fontSize: 16,
-                      color: Color(0xFFDC3545),
+                      color: kPrimaryColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -60,7 +60,7 @@
 //                 },
 //                 // _submitForm,
 //                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Color(0xFFDC3545),
+//                   backgroundColor: kPrimaryColor,
 //                 ),
 //                 child: const Text(
 //                   'Submit',

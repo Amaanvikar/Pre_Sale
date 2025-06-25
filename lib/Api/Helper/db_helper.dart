@@ -1,18 +1,17 @@
+import 'package:PreSale/Api/Model/user_model.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sql.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
   factory DBHelper() => _instance;
   DBHelper._internal();
 
-  static Database? _db;
+  static Database? _database;
 
-  Future<Database> get db async {
-    if (_db != null) return _db!;
-    _db = await _initDb();
-    return _db!;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDb();
+    return _database!;
   }
 
   Future<Database> _initDb() async {
@@ -35,7 +34,7 @@ class DBHelper {
   }
 
   Future<void> insertFollowUp(Map<String, dynamic> data) async {
-    final dbClient = await db;
+    final dbClient = await database;
     await dbClient.insert(
       'followup',
       data,
@@ -44,10 +43,21 @@ class DBHelper {
   }
 
   Future<Map<String, dynamic>?> getFollowUp() async {
-    final dbClient = await db;
+    final dbClient = await database;
     final result = await dbClient.query('followup', limit: 1);
     return result.isNotEmpty ? result.first : null;
   }
 
   join(String s, String t) {}
+
+  Future<int> insertEnquiry(Enquiry enquiry) async {
+    final db = await database;
+    return await db.insert('enquiries', enquiry.toMap());
+  }
+
+  Future<List<Enquiry>> getEnquiries() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('enquiries');
+    return List.generate(maps.length, (i) => Enquiry.fromMap(maps[i]));
+  }
 }

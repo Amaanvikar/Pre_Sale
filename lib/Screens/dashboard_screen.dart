@@ -1,3 +1,4 @@
+import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:PreSale/Screens/follow_up_form.dart';
 import 'package:PreSale/Screens/follow_up_list.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           'Presale',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            // color: Color(0xFFDC3545),
+            // color: kPrimaryColor,
           ),
         ),
       ),
@@ -35,7 +36,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EnquiryFromScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const EnquiryFromScreen(),
+                  ),
                 );
               },
             ),
@@ -89,7 +92,7 @@ class _DashboardCard extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          // side: BorderSide(color: Color(0xFFDC3545)),
+          // side: BorderSide(color: kPrimaryColor),
         ),
         elevation: 4,
         child: Center(
@@ -110,7 +113,7 @@ class _DashboardCard extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Color(0xFFDC3545),
+                    color: kPrimaryColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
