@@ -1,36 +1,158 @@
-import 'dart:math';
+import 'dart:convert';
 
+import 'package:PreSale/Api/ApiEndPoints/api_end_points.dart';
 import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/Model/UserRoleModel.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgot_pass_screen.dart';
 import 'package:PreSale/Screens/dashboard_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController captchaController = TextEditingController();
   bool rememberMe = false;
+  bool _isLoading = false;
 
-  String captchaCode = '';
+  Future<void> validateAndLogin() async {
+    setState(() => _isLoading = true);
 
-  String generateCaptcha(int length) {
-    const chars = 'AaBbCcDdEeFfGgHh1234567890';
-    final rand = Random();
-    return List.generate(
-      length,
-      (index) => chars[rand.nextInt(chars.length)],
-    ).join();
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Username and Password can't be empty")),
+      );
+      return;
+    }
+
+    final url = Uri.parse(ApiEndPoints.appLogin);
+    final headers = {"Content-Type": "application/json"};
+    final body = {
+      "action": "NONDOMLOG",
+      "loginId": username,
+      "password": password,
+      "newPassword": "",
+      "emailID": "",
+      "attemptCount": "",
+      "isLocked": true,
+      "modifiedBy": "",
+      "webMailProfile": "",
+      "emailApplicationURL": "",
+      "supportNo": "",
+      "supportEmailID": "",
+    };
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['success'] == true && data['data'][0]['LoginStatus'] == 1) {
+          final roles = await fetchUserRoles(username);
+          print("user role: $roles");
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('userRoles', jsonEncode(roles));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['data']?[0]?['Message'] ?? 'Login successful'),
+            ),
+          );
+
+          if (rememberMe) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('rememberMe', true);
+            await prefs.setString('username', username);
+            await prefs.setString('password', password);
+          }
+
+          setState(() => _isLoading = false);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => DashboardScreen()),
+          );
+        } else {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['data']?[0]?['Message'] ?? 'Login failed'),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Server error: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.pop(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login error: $e")));
+      print("Login Exception: $e");
+    }
+  }
+
+  Future<List<dynamic>> fetchUserRoles(String loginId) async {
+    final url = Uri.parse(ApiEndPoints.getUserRole);
+    final headers = {"Content-Type": "application/json"};
+    final body = jsonEncode({"loginId": loginId});
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      if (result['success'] == true) {
+        List rolesJson = result['data'];
+        return rolesJson.map((e) => UserRole.fromJson(e)).toList();
+      }
+    }
+    return [];
   }
 
   @override
   void initState() {
     super.initState();
-    captchaCode = generateCaptcha(6);
+    loadRememberedLogin();
+  }
+
+  Future<void> loadRememberedLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool remember = prefs.getBool('rememberMe') ?? false;
+
+    if (remember) {
+      setState(() {
+        rememberMe = true;
+        usernameController.text = prefs.getString('username') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+      });
+    }
   }
 
   @override
@@ -48,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
               Image.asset(
                 'assets/images/logo.png',
                 height: 80,
-              ), // Add your logo in assets
+              ), // logo in assets
               SizedBox(height: 30),
               // Login Card
               Container(
@@ -141,10 +263,17 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Checkbox(
                           value: rememberMe,
-                          onChanged: (val) {
+                          onChanged: (val) async {
                             setState(() {
                               rememberMe = val!;
                             });
+                            if (!rememberMe) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.remove('rememberMe');
+                              await prefs.remove('username');
+                              await prefs.remove('password');
+                            }
                           },
                         ),
                         const Text("Remember me"),
@@ -152,14 +281,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DashboardScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: _isLoading ? null : validateAndLogin,
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimaryColor,
                         shape: RoundedRectangleBorder(

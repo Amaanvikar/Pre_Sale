@@ -116,52 +116,6 @@ class _FollowUpFormScreenState extends State<FollowUpFormScreen> {
     super.initState();
   }
 
-  Future<void> fetchAndStoreData() async {
-    try {
-      final response = await http.get(
-        Uri.parse('https://mp44299944c38d3404c8.free.beeceptor.com'),
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        await DBHelper().insertFollowUp({
-          'id': 1,
-          'date': data['date'] ?? '',
-          'mode': data['mode'] ?? '',
-          'followUpBy': data['followUpBy'] ?? '',
-          'status': data['status'] ?? '',
-        });
-      }
-    } catch (e) {}
-    _loadFromLocal();
-  }
-
-  Future<void> _loadFromLocal() async {
-    final data = await DBHelper().getFollowUp();
-    if (data != null) {
-      setState(() {
-        dateController.text = data['date'] ?? '';
-        modeController.text = data['mode'] ?? '';
-        followUpByController.text = data['followUpBy'] ?? '';
-        statusController.text = data['status'] ?? '';
-      });
-    }
-  }
-
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      await DBHelper().insertFollowUp({
-        'id': 1,
-        'date': dateController.text,
-        'mode': modeController.text,
-        'followUpBy': followUpByController.text,
-        'status': statusController.text,
-      });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Form saved locally')));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,10 +131,6 @@ class _FollowUpFormScreenState extends State<FollowUpFormScreen> {
               _buildTextField('Follow-up by', followUpByController),
               _buildTextField('Status', statusController),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Submit'),
-              ),
             ],
           ),
         ),

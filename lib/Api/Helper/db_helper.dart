@@ -1,9 +1,11 @@
-import 'package:PreSale/Api/Model/user_model.dart';
+import 'package:PreSale/Api/Model/UserRoleModel.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
   factory DBHelper() => _instance;
+
   DBHelper._internal();
 
   static Database? _database;
@@ -15,49 +17,49 @@ class DBHelper {
   }
 
   Future<Database> _initDb() async {
-    final path = join(await getDatabasesPath(), 'followup.db');
+    final path = join(await getDatabasesPath(), 'user_roles.db');
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
         await db.execute('''
-        CREATE TABLE followup(
-          id INTEGER PRIMARY KEY,
-          date TEXT,
-          mode TEXT,
-          followUpBy TEXT,
-          status TEXT
+        CREATE TABLE user_roles(
+          UserId INTEGER,
+            RoleID INTEGER PRIMARY KEY,
+            RoleName TEXT,
+            RoleLevelID INTEGER,
+            RoleLevelName TEXT,
+            VerticalID INTEGER,
+            VerticalName TEXT,
+            Hierarchy INTEGER,
+            IsExcelDownload INTEGER,
+            IsPDFDownload INTEGER
         )
       ''');
       },
     );
   }
 
-  Future<void> insertFollowUp(Map<String, dynamic> data) async {
+  Future<void> insertUserRole(UserRole role) async {
     final dbClient = await database;
     await dbClient.insert(
-      'followup',
-      data,
+      'user_roles',
+      role.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<Map<String, dynamic>?> getFollowUp() async {
+  Future<List<UserRole>> getAllRoles() async {
     final dbClient = await database;
-    final result = await dbClient.query('followup', limit: 1);
-    return result.isNotEmpty ? result.first : null;
+    final List<Map<String, dynamic>> maps = await dbClient.query('user_roles');
+
+    return List.generate(maps.length, (i) {
+      return UserRole.fromMap(maps[i]);
+    });
   }
 
-  join(String s, String t) {}
-
-  Future<int> insertEnquiry(Enquiry enquiry) async {
-    final db = await database;
-    return await db.insert('enquiries', enquiry.toMap());
-  }
-
-  Future<List<Enquiry>> getEnquiries() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('enquiries');
-    return List.generate(maps.length, (i) => Enquiry.fromMap(maps[i]));
+  Future<void> clearAllRoles() async {
+    final dbClient = await database;
+    await dbClient.delete('user_roles');
   }
 }
