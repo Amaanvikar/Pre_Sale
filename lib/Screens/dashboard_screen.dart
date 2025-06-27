@@ -1,11 +1,11 @@
 import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Screens/follow_up_form.dart';
 import 'package:PreSale/Screens/follow_up_list.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Screens/Inquiry_form/enquiry_from_screen.dart';
 import 'package:PreSale/Screens/enquiry_list.dart';
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -30,6 +30,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
           children: [
+            // dashboardItems.map((item) {
+            //   return _DashboardCard(
+            //     imagePath: item['image'],
+            //     label: item['labels'],
+            //     onTap: () {
+            //       if (item['screen'] != null) {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(builder: () => item['screen']),
+            //         );
+            //       }
+            //     },
+            //   );
+            // }).toList(),
             _DashboardCard(
               imagePath: 'assets/images/Vector.png',
               label: 'Enquiry form',
@@ -74,16 +88,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
+final dashboardItems = [
+  {
+    'image': 'assets/images/Vector.png',
+    'label': 'Enquiry form',
+    'screen': const EnquiryFromScreen(),
+  },
+  {
+    'image': 'assets/images/fluent-color_list-bar-16.png',
+    'label': 'Enquiry List',
+    'screen': EnquiryListScreen(),
+  },
+  {
+    'image': 'assets/images/material-icon-theme_terraform.png',
+    'label': 'Follow Up',
+    'screen': FollowUplist(),
+  },
+  {
+    'image': 'assets/images/fluent-color_people-sync-24.png',
+    'label': 'Sync',
+    'screen': null,
+  },
+];
+
 class _DashboardCard extends StatelessWidget {
   final String imagePath;
   final String label;
   final VoidCallback onTap;
 
   const _DashboardCard({
+    Key? key,
     required this.imagePath,
     required this.label,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

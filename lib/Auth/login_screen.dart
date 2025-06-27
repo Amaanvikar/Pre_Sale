@@ -70,20 +70,29 @@ class LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        if (data['success'] == true && data['data'][0]['LoginStatus'] == 1) {
+        if (data['success'] == true &&
+            data['data'] != null &&
+            data['data'] is List &&
+            data['data'].isNotEmpty &&
+            data['data'][0]['LoginStatus'] == 1) {
           final roles = await fetchUserRoles(username);
           print("user role: $roles");
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('userRoles', jsonEncode(roles));
+
+          if (roles.isNotEmpty && roles[0] is UserRole) {
+            UserRole firstRole = roles[0] as UserRole;
+            await prefs.setInt('roleId', firstRole.roleId);
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(data['data']?[0]?['Message'] ?? 'Login successful'),
             ),
           );
-
+          await prefs.setString('userRoles', jsonEncode(roles));
           if (rememberMe) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('rememberMe', true);
             await prefs.setString('username', username);
             await prefs.setString('password', password);
