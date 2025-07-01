@@ -6,6 +6,16 @@ class SharedPreferenceHelper {
   static const String keyUserId = "user_id";
   static const String keyIsLoggedIn = "is_logged_in";
 
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
+
   // Setters
   static Future<void> setUserName(String value) async {
     final prefs = await SharedPreferences.getInstance();
