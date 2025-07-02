@@ -26,15 +26,15 @@ class UserRole {
   factory UserRole.fromJson(Map<String, dynamic> json) {
     return UserRole(
       userId: json['UserId'] ?? 0,
-      roleId: json['RoleID'],
-      roleName: json['RoleName'],
-      roleLevelId: json['RoleLevelID'],
-      roleLevelName: json['RoleLevelName'],
-      verticalId: json['VerticalID'],
-      verticalName: json['VerticalName'],
-      hierarchy: json['Hierarchy'],
-      isExcelDownload: json['IsExcelDownload'],
-      isPdfDownload: json['IsPDFDownload'],
+      roleId: json['RoleID'] ?? 0,
+      roleName: json['RoleName'] ?? '',
+      roleLevelId: json['RoleLevelID'] ?? 0,
+      roleLevelName: json['RoleLevelName'] ?? '',
+      verticalId: json['VerticalID'] ?? 0,
+      verticalName: json['VerticalName'] ?? '',
+      hierarchy: json['Hierarchy'] ?? 0,
+      isExcelDownload: json['IsExcelDownload'] ?? false,
+      isPdfDownload: json['IsPDFDownload'] ?? false,
     );
   }
 

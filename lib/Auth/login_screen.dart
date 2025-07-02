@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:PreSale/Api/ApiEndPoints/api_end_points.dart';
 import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Api/Model/UserRoleModel.dart';
+import 'package:PreSale/Api/Model/getUserRoleModel.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgot_pass_screen.dart';
 import 'package:PreSale/Screens/dashboard_screen.dart';
@@ -65,33 +65,35 @@ class LoginPageState extends State<LoginPage> {
         body: jsonEncode(body),
       );
 
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) Navigator.pop(context);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
         if (data['success'] == true &&
-            data['data'] != null &&
             data['data'] is List &&
             data['data'].isNotEmpty &&
-            data['data'][0]['LoginStatus'] == 1) {
+            data['data'][0]?['LoginStatus'] == 1) {
           final roles = await fetchUserRoles(username);
           print("user role: $roles");
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('userRoles', jsonEncode(roles));
+          await prefs.setString(
+            'userRoles',
+            jsonEncode(roles.map((e) => e.toJson()).toList()),
+          );
 
           if (roles.isNotEmpty && roles[0] is UserRole) {
-            UserRole firstRole = roles[0] as UserRole;
-            await prefs.setInt('roleId', firstRole.roleId);
+            final firstRole = roles[0] as UserRole;
+            if (firstRole.roleId != null) {
+              await prefs.setInt('roleId', firstRole.roleId);
+            }
           }
 
+          final message = data['data']?[0]?['Message'];
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(data['data']?[0]?['Message'] ?? 'Login successful'),
-            ),
+            SnackBar(content: Text(message?.toString() ?? 'Login successful')),
           );
-          await prefs.setString('userRoles', jsonEncode(roles));
           if (rememberMe) {
             await prefs.setBool('rememberMe', true);
             await prefs.setString('username', username);
@@ -99,10 +101,15 @@ class LoginPageState extends State<LoginPage> {
           }
 
           setState(() => _isLoading = false);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => DashboardScreen()),
-          );
+
+          try {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen()),
+            );
+          } catch (e) {
+            print("Navigation error: $e");
+          }
         } else {
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -133,15 +140,28 @@ class LoginPageState extends State<LoginPage> {
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({"loginId": loginId});
 
-    final response = await http.post(url, headers: headers, body: body);
+    try {
+      final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      if (result['success'] == true) {
-        List rolesJson = result['data'];
-        return rolesJson.map((e) => UserRole.fromJson(e)).toList();
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result['success'] == true && result['data'] is List) {
+          return (result['data'] as List)
+              .map((roleJson) => UserRole.fromJson(roleJson))
+              .toList();
+        } else {
+          print(
+            "fetchUserRoles error: API call succeeded but returned unexpected data format.",
+          );
+        }
+      } else {
+        print("fetchUserRoles error: Status ${response.statusCode}");
       }
+    } catch (e) {
+      print("fetchUserRoles exception: $e");
     }
+
     return [];
   }
 
