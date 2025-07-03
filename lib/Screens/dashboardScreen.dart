@@ -1,6 +1,7 @@
 import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:PreSale/Screens/followUpListScreen.dart';
 import 'package:PreSale/widgets/appDrawer.dart';
+import 'package:PreSale/widgets/profileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Screens/InquiryForms/enquiryInformationScreen.dart';
 import 'package:PreSale/Screens/enquiryListScreen.dart';
@@ -18,13 +19,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: const Text(
           'Presale',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: kPrimaryColor,
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
+            color: Colors.white,
             icon: const Icon(Icons.account_circle_rounded, size: 28),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ProfileScreen()),
+              );
+            },
           ),
         ],
       ),

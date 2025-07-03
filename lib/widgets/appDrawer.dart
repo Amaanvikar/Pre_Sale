@@ -20,9 +20,9 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Future<void> loadUserName() async {
-    final name = SharedPreferenceHelper.getUserName();
+    final name = await SharedPreferenceHelper.getUserName() as String;
     setState(() {
-      userName;
+      userName = name ?? 'User';
     });
   }
 

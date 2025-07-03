@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
 import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/Helper/sharedPreferences.dart';
 import 'package:PreSale/Api/Model/getUserRoleModel.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgotPassScreen.dart';
@@ -74,6 +75,9 @@ class LoginPageState extends State<LoginPage> {
             data['data'] is List &&
             data['data'].isNotEmpty &&
             data['data'][0]?['LoginStatus'] == 1) {
+          final LoggedInUserName = data['data'][0]?['UserName'] ?? 'User';
+          await SharedPreferenceHelper.setUserName(LoggedInUserName);
+
           final roles = await fetchUserRoles(username);
           print("user role: $roles");
 
