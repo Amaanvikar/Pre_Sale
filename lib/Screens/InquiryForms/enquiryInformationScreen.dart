@@ -1,7 +1,7 @@
 import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Api/Helper/db_helper.dart';
+import 'package:PreSale/Api/Helper/dbHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:PreSale/Screens/Inquiry_form/enquiry_from2_.dart';
+import 'package:PreSale/Screens/InquiryForms/productInformationScreen.dart';
 
 class EnquiryFromScreen extends StatefulWidget {
   const EnquiryFromScreen({super.key});

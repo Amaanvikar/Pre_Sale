@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:PreSale/Api/ApiEndPoints/api_end_points.dart';
+import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
 import 'package:PreSale/Api/Helper/constant.dart';
 import 'package:PreSale/Api/Model/getUserRoleModel.dart';
 import 'package:flutter/material.dart';
-import 'package:PreSale/Auth/forgot_pass_screen.dart';
-import 'package:PreSale/Screens/dashboard_screen.dart';
+import 'package:PreSale/Auth/forgotPassScreen.dart';
+import 'package:PreSale/Screens/dashboardScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -184,6 +184,46 @@ class LoginPageState extends State<LoginPage> {
     }
   }
 
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String label,
+    IconData? icon,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        prefixIcon: icon != null ? Icon(icon, color: kPrimaryColor) : null,
+        labelText: label,
+        border: UnderlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget buildButton({
+    required String text,
+    required VoidCallback onPressed,
+    bool isLoading = false,
+  }) {
+    return ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: kPrimaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 16, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -224,25 +264,19 @@ class LoginPageState extends State<LoginPage> {
                     Text('Welcome to login page', textAlign: TextAlign.center),
                     SizedBox(height: 20),
                     // Username
-                    TextField(
+                    buildTextField(
                       controller: usernameController,
+                      label: 'Username',
+                      icon: Icons.person,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.person, color: kPrimaryColor),
-                        labelText: 'Username',
-                        border: UnderlineInputBorder(),
-                      ),
                     ),
                     SizedBox(height: 16),
                     // Password
-                    TextField(
+                    buildTextField(
                       controller: passwordController,
+                      label: 'Password',
+                      icon: Icons.lock,
                       obscureText: true,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock, color: kPrimaryColor),
-                        labelText: 'Password',
-                        border: UnderlineInputBorder(),
-                      ),
                     ),
                     SizedBox(height: 16),
                     /* Captcha
@@ -309,22 +343,10 @@ class LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : validateAndLogin,
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: const Text(
-                          "LOGIN",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ),
+                    buildButton(
+                      text: "LOGIN",
+                      onPressed: validateAndLogin,
+                      isLoading: _isLoading,
                     ),
                     SizedBox(height: 10),
                     TextButton(

@@ -1,8 +1,9 @@
 import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Screens/follow_up_list.dart';
+import 'package:PreSale/Screens/followUpListScreen.dart';
+import 'package:PreSale/widgets/appDrawer.dart';
 import 'package:flutter/material.dart';
-import 'package:PreSale/Screens/Inquiry_form/enquiry_from_screen.dart';
-import 'package:PreSale/Screens/enquiry_list.dart';
+import 'package:PreSale/Screens/InquiryForms/enquiryInformationScreen.dart';
+import 'package:PreSale/Screens/enquiryListScreen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -17,12 +18,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: const Text(
           'Presale',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            // color: kPrimaryColor,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        backgroundColor: kPrimaryColor,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle_rounded, size: 28),
+            onPressed: () {},
+          ),
+        ],
       ),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.count(
