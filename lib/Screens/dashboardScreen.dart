@@ -1,10 +1,13 @@
 import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/Services/masterDataServices';
+import 'package:PreSale/Api/Services/userServices.dart';
 import 'package:PreSale/Screens/followUpListScreen.dart';
 import 'package:PreSale/widgets/appDrawer.dart';
 import 'package:PreSale/widgets/profileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Screens/InquiryForms/enquiryInformationScreen.dart';
 import 'package:PreSale/Screens/enquiryListScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -93,7 +96,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _DashboardCard(
               imagePath: 'assets/images/fluent-color_people-sync-24.png',
               label: 'Sync',
-              onTap: () {},
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String loginId = prefs.getString('username') ?? '';
+
+                if (loginId.isNotEmpty) {
+                  await UserService.fetchUserRoles(loginId);
+                  await MasterDataService.fetchMasterData;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Data synced to local DB')),
+                  );
+                }
+              },
             ),
           ],
         ),

@@ -67,4 +67,8 @@ class UserRole {
       isPdfDownload: map['IsPDFDownload'] == 1,
     );
   }
+  @override
+  String toString() {
+    return 'UserRole(roleId: $roleId, roleName: $roleName, vertical: $verticalName)';
+  }
 }

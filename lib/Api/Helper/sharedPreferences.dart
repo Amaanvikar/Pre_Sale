@@ -5,6 +5,8 @@ class SharedPreferenceHelper {
   static const String keyUserName = "user_name";
   static const String keyUserId = "user_id";
   static const String keyIsLoggedIn = "is_logged_in";
+  static const String _roleIdKey = 'roleId';
+  static const String _roleNameKey = 'roleName';
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -41,6 +43,26 @@ class SharedPreferenceHelper {
   static Future<int?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(keyUserId);
+  }
+
+  static Future<void> setRoleId(int roleId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_roleIdKey, roleId);
+  }
+
+  static Future<int?> getRoleId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_roleIdKey);
+  }
+
+  static Future<void> setRoleName(String roleName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_roleNameKey, roleName);
+  }
+
+  static Future<String?> getRoleName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_roleNameKey);
   }
 
   static Future<bool> isLoggedIn() async {

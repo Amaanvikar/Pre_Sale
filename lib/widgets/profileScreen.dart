@@ -12,7 +12,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = 'User';
-  String? email;
+  String? roleName;
+  int? roleId;
 
   @override
   void initState() {
@@ -22,10 +23,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> loadUserData() async {
     final name = await SharedPreferenceHelper.getUserName();
-    // final storedEmail = await SharedPreferenceHelper.getUserEmail(); // Optional
+    final storedRoleName = await SharedPreferenceHelper.getRoleName();
+    final storedRoleId = await SharedPreferenceHelper.getRoleId();
+
     setState(() {
       userName = name ?? 'User';
-      // email = storedEmail;
+      roleName = storedRoleName;
+      roleId = storedRoleId;
     });
   }
 
@@ -66,21 +70,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    userName,
+                    roleName ?? 'Role',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (email != null)
-                    Text(email!, style: const TextStyle(color: Colors.white70)),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-            _buildProfileItem(Icons.person, 'Username', userName),
-            // _buildProfileItem(Icons.email, 'Email', email ?? 'Not available'),
+            _buildProfileItem(Icons.person, 'Role Name', roleName ?? 'Role'),
+
+            if (roleId != null)
+              _buildProfileItem(Icons.vpn_key, 'Role ID', roleId.toString()),
+            if (roleName != null)
+              _buildProfileItem(Icons.verified_user, 'Role Name', roleName!),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),

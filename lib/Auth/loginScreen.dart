@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
 import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/Helper/dbHelper.dart';
 import 'package:PreSale/Api/Helper/sharedPreferences.dart';
 import 'package:PreSale/Api/Model/getUserRoleModel.dart';
+import 'package:PreSale/Api/Services/userServices.dart';
 import 'package:flutter/material.dart';
 import 'package:PreSale/Auth/forgotPassScreen.dart';
 import 'package:PreSale/Screens/dashboardScreen.dart';
@@ -78,7 +80,7 @@ class LoginPageState extends State<LoginPage> {
           final LoggedInUserName = data['data'][0]?['UserName'] ?? 'User';
           await SharedPreferenceHelper.setUserName(LoggedInUserName);
 
-          final roles = await fetchUserRoles(username);
+          final roles = await UserService.fetchUserRoles(username);
           print("user role: $roles");
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -91,6 +93,7 @@ class LoginPageState extends State<LoginPage> {
             final firstRole = roles[0] as UserRole;
             if (firstRole.roleId != null) {
               await prefs.setInt('roleId', firstRole.roleId);
+              await prefs.setString('roleName', firstRole.roleName);
             }
           }
 
@@ -146,14 +149,25 @@ class LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
+      print("fetchUserRoles raw response: ${response.body}");
 
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
 
+        print("Decoded 'data' field: ${result['data']}");
+
         if (result['success'] == true && result['data'] is List) {
-          return (result['data'] as List)
-              .map((roleJson) => UserRole.fromJson(roleJson))
-              .toList();
+          final roles =
+              (result['data'] as List)
+                  .map((roleJson) => UserRole.fromJson(roleJson))
+                  .toList();
+
+          final db = DBHelper();
+          await db.clearAllRoles();
+          for (var role in roles) {
+            await db.insertUserRole(role);
+          }
+          print("${roles.length} user roles saved to local DB.");
         } else {
           print(
             "fetchUserRoles error: API call succeeded but returned unexpected data format.",

@@ -1,0 +1,72 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:PreSale/Api/Helper/constant.dart';
+import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
+
+
+class MasterDataService {
+  static Future<void> syncAllMasterData() async {
+    final List<String> refKeywords = [
+      'Vertical',
+      'Segment',
+      'SubSegment',
+      'DealBy',
+      'Source',
+      'CustomerType'
+      // Add more as needed
+    ];
+
+    for (var refKeyword in refKeywords) {
+      final data = await fetchMasterData(refKeyword);
+      print(" Synced $refKeyword: ${data.length} items");
+
+      // Optionally store in DB
+      // await DBHelper.insertMasterData(refKeyword, data);
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchMasterData(String refKeyword) async {
+    final url = Uri.parse(ApiEndPoints.getAllMasterData);
+
+    final body = {
+      "refKeyword": refKeyword,
+      "isActive": 0,
+      "id": 0,
+      "pinCodeID": 0,
+      "transSMSID": 0,
+      "smsTo": "string",
+      "smsBody": "string",
+      "createdBy": "string",
+      "createdDate": DateTime.now().toIso8601String(),
+      "modifiedBy": "string",
+      "modifiedDate": DateTime.now().toIso8601String(),
+      "action": "string",
+      "result": 0
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "accept": "text/plain",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        if (result['success'] == true && result['data'] is List) {
+          return List<Map<String, dynamic>>.from(result['data']);
+        }
+      } else {
+        print("Error: Status ${response.statusCode}");
+      }
+    } catch (e) {
+      print("fetchMasterData error: $e");
+    }
+
+    return [];
+  }
+}
