@@ -1,5 +1,5 @@
-import 'package:PreSale/Api/Model/vertical_model.dart';
 import 'package:path/path.dart';
+import 'package:presale/Api/Model/vertical_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class VerticalDBHelper {

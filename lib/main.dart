@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:PreSale/Auth/splashScreen.dart';
+import 'package:presale/Auth/splashScreen.dart';
 
 void main() {
   runApp(const MyApp());

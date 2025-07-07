@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
-import 'package:PreSale/Api/Helper/dbHelper.dart';
 import 'package:http/http.dart' as http;
-import 'package:PreSale/Api/Model/getUserRoleModel.dart';
+import 'package:presale/Api/ApiEndPoints/apiEndPoints.dart';
+import 'package:presale/Api/Helper/dbHelper.dart';
+import 'package:presale/Api/Model/getUserRoleModel.dart';
 
 class UserService {
   static Future<List<UserRole>> fetchUserRoles(String loginId) async {

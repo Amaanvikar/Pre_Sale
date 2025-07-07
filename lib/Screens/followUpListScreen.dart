@@ -1,6 +1,6 @@
-import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Screens/followUpFormScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Screens/followUpFormScreen.dart';
 
 class FollowUplist extends StatefulWidget {
   const FollowUplist({super.key});

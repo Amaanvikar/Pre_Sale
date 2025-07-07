@@ -1,7 +1,7 @@
-import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Api/Helper/dbHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:PreSale/Screens/InquiryForms/productInformationScreen.dart';
+import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Database/verticalDbHelper.dart';
+import 'package:presale/Screens/InquiryForms/productInformationScreen.dart';
 
 class EnquiryFromScreen extends StatefulWidget {
   const EnquiryFromScreen({super.key});
@@ -16,8 +16,10 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   final _formKey = GlobalKey<FormState>();
   String selectedCategory = 'Individual';
 
+  List<String> verticalOptions = [];
+
   // Form field values
-  String? vertical = 'Retail';
+  String? vertical;
   String? enquiryNo;
   String? communicationMode = 'Retail';
   String? segment;
@@ -62,6 +64,26 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadVerticals();
+  }
+
+  Future<void> _loadVerticals() async {
+    final verticalList = await VerticalDBHelper().getAllVerticals();
+
+    setState(() {
+      verticalOptions = verticalList.map((v) => v.verticalName).toList();
+
+      if (verticalOptions.isNotEmpty) {
+        vertical = verticalOptions.first;
+      } else {
+        vertical = null;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +109,11 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 'Corporate',
               ], (val) => selectedCategory = val!),
 
-              _buildDropdown("Vertical", ['Retail'], (val) => vertical = val),
+              _buildDropdown(
+                "Vertical",
+                verticalOptions,
+                (val) => setState(() => vertical = val),
+              ),
               _buildTextField("Enquiry no", (val) => enquiryNo = val),
               _buildDropdown("Communication mode", [
                 'Retail',
@@ -157,19 +183,25 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
     List<String> items,
     Function(String?) onChanged,
   ) {
+    final hasItems = items.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
-        value: items.first,
+        value: hasItems && items.contains(vertical) ? vertical : null,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),
         ),
         items:
-            items
-                .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-                .toList(),
-        onChanged: onChanged,
+            hasItems
+                ? items
+                    .map(
+                      (item) =>
+                          DropdownMenuItem(value: item, child: Text(item)),
+                    )
+                    .toList()
+                : [],
+        onChanged: hasItems ? onChanged : null,
         validator:
             (value) => value == null || value.isEmpty ? 'Required' : null,
       ),

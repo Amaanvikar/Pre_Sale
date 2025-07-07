@@ -1,4 +1,4 @@
-import 'package:PreSale/Api/Model/kva_model.dart';
+import 'package:presale/Api/Model/kva_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

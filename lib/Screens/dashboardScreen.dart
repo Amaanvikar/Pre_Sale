@@ -1,12 +1,13 @@
-import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Api/Services/masterDataServices';
-import 'package:PreSale/Api/Services/userServices.dart';
-import 'package:PreSale/Screens/followUpListScreen.dart';
-import 'package:PreSale/widgets/appDrawer.dart';
-import 'package:PreSale/widgets/profileScreen.dart';
+import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Api/Services/masterDataServices';
+import 'package:presale/Api/Services/userServices.dart';
+import 'package:presale/Screens/InquiryForms/enquiryInformationScreen.dart';
+import 'package:presale/Screens/followUpListScreen.dart';
+import 'package:presale/widgets/profileScreen.dart';
+
 import 'package:flutter/material.dart';
-import 'package:PreSale/Screens/InquiryForms/enquiryInformationScreen.dart';
-import 'package:PreSale/Screens/enquiryListScreen.dart';
+import 'package:presale/Screens/enquiryListScreen.dart';
+import 'package:presale/widgets/appDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -100,14 +101,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 String loginId = prefs.getString('username') ?? '';
 
-                if (loginId.isNotEmpty) {
-                  await UserService.fetchUserRoles(loginId);
-                  await MasterDataService.fetchMasterData;
+                await MasterDataService.syncAllMasterData();
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Data synced to local DB')),
-                  );
-                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Data synced to local DB')),
+                );
               },
             ),
           ],

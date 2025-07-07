@@ -1,4 +1,4 @@
-import 'package:PreSale/Api/Model/getUserRoleModel.dart';
+import 'package:presale/Api/Model/getUserRoleModel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -61,5 +61,16 @@ class DBHelper {
   Future<void> clearAllRoles() async {
     final dbClient = await database;
     await dbClient.delete('user_roles');
+  }
+
+  Future<List<UserRole>> getRolesByUserId(int userId) async {
+    final db = await database;
+    final result = await db.query(
+      'UserRole',
+      where: 'userId = ?',
+      whereArgs: [userId],
+    );
+
+    return result.map((e) => UserRole.fromMap(e)).toList();
   }
 }

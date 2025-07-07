@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:PreSale/Api/ApiEndPoints/apiEndPoints.dart';
-import 'package:PreSale/Api/Helper/constant.dart';
-import 'package:PreSale/Api/Helper/dbHelper.dart';
-import 'package:PreSale/Api/Helper/sharedPreferences.dart';
-import 'package:PreSale/Api/Model/getUserRoleModel.dart';
-import 'package:PreSale/Api/Services/userServices.dart';
 import 'package:flutter/material.dart';
-import 'package:PreSale/Auth/forgotPassScreen.dart';
-import 'package:PreSale/Screens/dashboardScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:presale/Api/ApiEndPoints/apiEndPoints.dart';
+import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Api/Helper/dbHelper.dart';
+import 'package:presale/Api/Helper/sharedPreferences.dart';
+import 'package:presale/Api/Model/getUserRoleModel.dart';
+import 'package:presale/Api/Services/userServices.dart';
+import 'package:presale/Auth/forgotPassScreen.dart';
+import 'package:presale/Screens/dashboardScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -77,8 +77,8 @@ class LoginPageState extends State<LoginPage> {
             data['data'] is List &&
             data['data'].isNotEmpty &&
             data['data'][0]?['LoginStatus'] == 1) {
-          final LoggedInUserName = data['data'][0]?['UserName'] ?? 'User';
-          await SharedPreferenceHelper.setUserName(LoggedInUserName);
+          final userId = data['data'][0]?['UserId'] ?? 'User';
+          await SharedPreferenceHelper.setUserId(userId);
 
           final roles = await UserService.fetchUserRoles(username);
           print("user role: $roles");

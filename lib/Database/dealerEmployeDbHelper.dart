@@ -1,4 +1,4 @@
-import 'package:PreSale/Api/Model/dealer_employe_model.dart';
+import 'package:presale/Api/Model/dealer_employe_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

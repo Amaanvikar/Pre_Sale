@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import '../db/vertical_db_helper.dart'; // Adjust path if needed
+import '../models/vertical_model.dart'; // Your VerticalModel class
+
+class VerticalListScreen extends StatefulWidget {
+  @override
+  _VerticalListScreenState createState() => _VerticalListScreenState();
+}
+
+class _VerticalListScreenState extends State<VerticalListScreen> {
+  List<VerticalModel> verticals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVerticals();
+  }
+
+  Future<void> _loadVerticals() async {
+    final data = await VerticalDBHelper().getAllVerticals();
+    setState(() {
+      verticals = data;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Verticals from Local DB')),
+      body: verticals.isEmpty
+          ? Center(child: Text('No data found'))
+          : ListView.builder(
+              itemCount: verticals.length,
+              itemBuilder: (context, index) {
+                final vertical = verticals[index];
+                return ListTile(
+                  leading: CircleAvatar(child: Text('${vertical.verticalID}')),
+                  title: Text('Name: ${vertical.verticalName}'),
+                  subtitle: Text('Abbreviation: ${vertical.listAbbreviation}'),
+                );
+              },
+            ),
+    );
+  }
+}

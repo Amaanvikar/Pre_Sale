@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:PreSale/Api/Helper/sharedPreferences.dart';
-import 'package:PreSale/Auth/loginScreen.dart';
-import 'package:PreSale/Api/Helper/constant.dart';
+
+import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Api/Helper/dbHelper.dart';
+import 'package:presale/Api/Helper/sharedPreferences.dart';
+import 'package:presale/Api/Model/getUserRoleModel.dart';
+import 'package:presale/Auth/loginScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  List<UserRole> allUserRoles = [];
+
   String userName = 'User';
   String? roleName;
   int? roleId;
@@ -25,11 +30,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final name = await SharedPreferenceHelper.getUserName();
     final storedRoleName = await SharedPreferenceHelper.getRoleName();
     final storedRoleId = await SharedPreferenceHelper.getRoleId();
+    final currentUserId = await SharedPreferenceHelper.getUserId();
+    print("Current Logged-in UserId: $currentUserId");
+
+    final db = DBHelper();
+    final roles = await db.getRolesByUserId(currentUserId!);
+    print("Roles fetched from DB for user $currentUserId: ${roles.length}");
 
     setState(() {
       userName = name ?? 'User';
       roleName = storedRoleName;
       roleId = storedRoleId;
+      allUserRoles = roles.take(5).toList();
     });
   }
 
@@ -70,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    roleName ?? 'Role',
+                    userName,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -81,12 +93,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildProfileItem(Icons.person, 'Role Name', roleName ?? 'Role'),
 
-            if (roleId != null)
-              _buildProfileItem(Icons.vpn_key, 'Role ID', roleId.toString()),
-            if (roleName != null)
-              _buildProfileItem(Icons.verified_user, 'Role Name', roleName!),
+            if (allUserRoles.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Text(
+                  "No roles found.",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            else
+              ...allUserRoles.map((role) => _buildRoleCard(role)),
+
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -112,14 +130,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value) {
+  // Build single role card
+  Widget _buildRoleCard(UserRole role) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: Icon(icon, color: kPrimaryColor),
-        title: Text(title),
-        subtitle: Text(value),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              role.roleName,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text("Role ID: ${role.roleId}"),
+            Text("Role Level: ${role.roleLevelName}"),
+            Text("Vertical: ${role.verticalName ?? 'N/A'}"),
+          ],
+        ),
       ),
     );
   }
