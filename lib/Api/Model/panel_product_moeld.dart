@@ -34,4 +34,6 @@ class PanelProductModel {
       'PanelProductName': panelProductName,
     };
   }
+
+  static List<PanelProductModel> panelProductList = [];
 }

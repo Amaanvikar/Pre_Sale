@@ -32,6 +32,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final storedRoleId = await SharedPreferenceHelper.getRoleId();
     final currentUserId = await SharedPreferenceHelper.getUserId();
     print("Current Logged-in UserId: $currentUserId");
+    if (currentUserId == null) {
+      print("User ID is null. Redirecting to login.");
+      return;
+    }
 
     final db = DBHelper();
     final roles = await db.getRolesByUserId(currentUserId!);
@@ -145,9 +149,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
+            Text("User ID: ${role.userId}"),
             Text("Role ID: ${role.roleId}"),
-            Text("Role Level: ${role.roleLevelName}"),
-            Text("Vertical: ${role.verticalName ?? 'N/A'}"),
+            Text("Role Level ID: ${role.roleLevelId}"),
+            Text("Role Level Name: ${role.roleLevelName}"),
           ],
         ),
       ),

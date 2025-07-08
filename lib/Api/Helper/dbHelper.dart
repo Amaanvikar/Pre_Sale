@@ -66,7 +66,7 @@ class DBHelper {
   Future<List<UserRole>> getRolesByUserId(int userId) async {
     final db = await database;
     final result = await db.query(
-      'UserRole',
+      'user_roles',
       where: 'userId = ?',
       whereArgs: [userId],
     );

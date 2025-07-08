@@ -1,11 +1,11 @@
-class DealerEmployee {
+class DealByModel {
   final int dealerEmployeeID;
   final String employeeName;
 
-  DealerEmployee({required this.dealerEmployeeID, required this.employeeName});
+  DealByModel({required this.dealerEmployeeID, required this.employeeName});
 
-  factory DealerEmployee.fromJson(Map<String, dynamic> json) {
-    return DealerEmployee(
+  factory DealByModel.fromJson(Map<String, dynamic> json) {
+    return DealByModel(
       dealerEmployeeID: json['DealerEmployeeID'],
       employeeName: json['EmployeeName'],
     );
@@ -15,8 +15,8 @@ class DealerEmployee {
     return {'DealerEmployeeID': dealerEmployeeID, 'EmployeeName': employeeName};
   }
 
-  factory DealerEmployee.fromMap(Map<String, dynamic> map) {
-    return DealerEmployee(
+  factory DealByModel.fromMap(Map<String, dynamic> map) {
+    return DealByModel(
       dealerEmployeeID: map['DealerEmployeeID'],
       employeeName: map['EmployeeName'],
     );
@@ -25,4 +25,6 @@ class DealerEmployee {
   Map<String, dynamic> toMap() {
     return {'DealerEmployeeID': dealerEmployeeID, 'EmployeeName': employeeName};
   }
+
+  static List<DealByModel> dealByList = [];
 }

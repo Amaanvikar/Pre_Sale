@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:presale/Api/Helper/constant.dart';
+import 'package:presale/Database/customerTypeDbHelper.dart';
+import 'package:presale/Database/dealByDbHelper.dart';
+import 'package:presale/Database/segmentDbHelper.dart';
 import 'package:presale/Database/verticalDbHelper.dart';
 import 'package:presale/Screens/InquiryForms/productInformationScreen.dart';
 
@@ -17,6 +20,12 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   String selectedCategory = 'Individual';
 
   List<String> verticalOptions = [];
+  List<String> segmentOptions = [];
+  List<String> dealByOptions = [];
+  List<String> customerTypeOptions = [];
+
+  final List<String> selectOptions = ['Select'];
+  final List<String> categoryOptions = ['Individual', 'Corporate'];
 
   // Form field values
   String? vertical;
@@ -29,10 +38,6 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   String? dealBy;
   String? customerType;
   String? category = 'Individual';
-
-  // Dropdown Options
-  final List<String> selectOptions = ['Select'];
-  final List<String> categoryOptions = ['Individual', 'Corporate'];
 
   // Date picker
   Future<void> _pickDateTime() async {
@@ -67,6 +72,9 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   void initState() {
     super.initState();
     _loadVerticals();
+    _loadSegments();
+    _loadDealBy();
+    _loadCustomerTypes();
   }
 
   Future<void> _loadVerticals() async {
@@ -80,6 +88,32 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
       } else {
         vertical = null;
       }
+    });
+  }
+
+  Future<void> _loadSegments() async {
+    final segmentList = await SegmentDBHelper().getAllSegments();
+    setState(() {
+      segmentOptions = segmentList.map((e) => e.segmentName).toList();
+      segment = segmentOptions.isNotEmpty ? segmentOptions.first : null;
+    });
+  }
+
+  Future<void> _loadDealBy() async {
+    final dealByList = await DealByDBHelper().getAllDealBy();
+    setState(() {
+      dealByOptions = dealByList.map((e) => e.employeeName).toList();
+      dealBy = dealByOptions.isNotEmpty ? dealByOptions.first : null;
+    });
+  }
+
+  Future<void> _loadCustomerTypes() async {
+    final customerTypeList = await CustomerTypeDBHelper().getAllCustomerTypes();
+    setState(() {
+      customerTypeOptions =
+          customerTypeList.map((e) => e.customerTypeName).toList();
+      customerType =
+          customerTypeOptions.isNotEmpty ? customerTypeOptions.first : null;
     });
   }
 
@@ -103,39 +137,66 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(height: 10),
-              _buildTextField("Title", (val) => titleController.text = val!),
-              _buildDropdown("Category", [
-                'Individual',
-                'Corporate',
-              ], (val) => selectedCategory = val!),
-
               _buildDropdown(
                 "Vertical",
                 verticalOptions,
+                vertical,
                 (val) => setState(() => vertical = val),
               ),
-              _buildTextField("Enquiry no", (val) => enquiryNo = val),
-              _buildDropdown("Communication mode", [
-                'Retail',
-              ], (val) => communicationMode = val),
-              _buildDropdown("Segment", selectOptions, (val) => segment = val),
+              _buildTextField("Title", (val) => titleController.text = val!),
+              _buildDropdown(
+                "Category",
+                ['Individual', 'Corporate'],
+                selectedCategory,
+                (val) => setState(() => selectedCategory = val!),
+              ),
+
+              _buildTextField(
+                "Enquiry no",
+                (val) => setState(() => enquiryNo = val),
+              ),
+              _buildDropdown(
+                "Communication mode",
+                ['Retail'],
+                communicationMode,
+                (val) => setState(() => communicationMode = val),
+              ),
+              _buildDropdown(
+                "Segment",
+                segmentOptions,
+                segment,
+                (val) => setState(() => segment = val),
+              ),
               _buildDropdown(
                 "Sub Segment",
                 selectOptions,
+                subSegment,
                 (val) => subSegment = val,
               ),
               _buildDateTimePicker("Enquiry Date"),
-              _buildDropdown("Source", selectOptions, (val) => source = val),
-              _buildDropdown("Deal By", selectOptions, (val) => dealBy = val),
+              _buildDropdown(
+                "Source",
+                selectOptions,
+                source,
+                (val) => setState(() => source = val),
+              ),
+              _buildDropdown(
+                "Deal By",
+                dealByOptions,
+                dealBy,
+                (val) => setState(() => dealBy = val),
+              ),
               _buildDropdown(
                 "Customer Type",
-                selectOptions,
-                (val) => customerType = val,
+                customerTypeOptions,
+                customerType,
+                (val) => setState(() => customerType = val),
               ),
               _buildDropdown(
                 "Category",
                 categoryOptions,
-                (val) => category = val,
+                category,
+                (val) => setState(() => category = val),
               ),
               SizedBox(height: 20),
               Row(
@@ -181,13 +242,14 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   Widget _buildDropdown(
     String label,
     List<String> items,
+    String? selectedValue,
     Function(String?) onChanged,
   ) {
     final hasItems = items.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
-        value: hasItems && items.contains(vertical) ? vertical : null,
+        value: hasItems && items.contains(selectedValue) ? selectedValue : null,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),

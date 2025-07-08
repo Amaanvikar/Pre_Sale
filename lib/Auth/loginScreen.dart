@@ -81,7 +81,8 @@ class LoginPageState extends State<LoginPage> {
             data['data'][0]?['UserId'].toString() ?? '',
           );
           if (userId != null) {
-            await SharedPreferenceHelper.setUserId(userId);
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('userId', userId);
           }
 
           final roles = await UserService.fetchUserRoles(username);

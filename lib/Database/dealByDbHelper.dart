@@ -2,11 +2,10 @@ import 'package:presale/Api/Model/dealer_employe_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DealerEmployeeDBHelper {
-  static final DealerEmployeeDBHelper _instance =
-      DealerEmployeeDBHelper._internal();
-  factory DealerEmployeeDBHelper() => _instance;
-  DealerEmployeeDBHelper._internal();
+class DealByDBHelper {
+  static final DealByDBHelper _instance = DealByDBHelper._internal();
+  factory DealByDBHelper() => _instance;
+  DealByDBHelper._internal();
 
   static Database? _database;
 
@@ -32,7 +31,7 @@ class DealerEmployeeDBHelper {
     );
   }
 
-  Future<void> insertDealerEmployee(DealerEmployee employee) async {
+  Future<void> insertDealBy(DealByModel employee) async {
     final db = await database;
     await db.insert(
       'dealer_employees',
@@ -41,7 +40,7 @@ class DealerEmployeeDBHelper {
     );
   }
 
-  Future<void> insertAllDealerEmployees(List<DealerEmployee> employees) async {
+  Future<void> insertAllDealBy(List<DealByModel> employees) async {
     final db = await database;
     final batch = db.batch();
     for (var e in employees) {
@@ -54,13 +53,13 @@ class DealerEmployeeDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<DealerEmployee>> getAllDealerEmployees() async {
+  Future<List<DealByModel>> getAllDealBy() async {
     final db = await database;
     final result = await db.query('dealer_employees');
-    return result.map((e) => DealerEmployee.fromMap(e)).toList();
+    return result.map((e) => DealByModel.fromMap(e)).toList();
   }
 
-  Future<void> clearDealerEmployees() async {
+  Future<void> clearDealBy() async {
     final db = await database;
     await db.delete('dealer_employees');
   }

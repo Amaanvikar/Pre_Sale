@@ -1,4 +1,4 @@
-import 'package:presale/Api/Model/source_model.dart';
+import 'package:presale/Api/Model/sourceModel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -31,7 +31,7 @@ class SourceDBHelper {
     );
   }
 
-  Future<void> insertSource(Source source) async {
+  Future<void> insertSource(SourceModel source) async {
     final db = await database;
     await db.insert(
       'sources',
@@ -40,7 +40,7 @@ class SourceDBHelper {
     );
   }
 
-  Future<void> insertAllSources(List<Source> sources) async {
+  Future<void> insertAllSources(List<SourceModel> sources) async {
     final db = await database;
     final batch = db.batch();
     for (var s in sources) {
@@ -53,10 +53,10 @@ class SourceDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<Source>> getAllSources() async {
+  Future<List<SourceModel>> getAllSources() async {
     final db = await database;
     final result = await db.query('sources');
-    return result.map((e) => Source.fromMap(e)).toList();
+    return result.map((e) => SourceModel.fromMap(e)).toList();
   }
 
   Future<void> clearSources() async {

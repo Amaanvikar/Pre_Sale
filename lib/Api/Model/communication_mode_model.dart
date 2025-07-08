@@ -1,11 +1,11 @@
-class CommunicationMode {
+class CommunicationModeModel {
   final int modeID;
   final String modeName;
 
-  CommunicationMode({required this.modeID, required this.modeName});
+  CommunicationModeModel({required this.modeID, required this.modeName});
 
-  factory CommunicationMode.fromJson(Map<String, dynamic> json) {
-    return CommunicationMode(
+  factory CommunicationModeModel.fromJson(Map<String, dynamic> json) {
+    return CommunicationModeModel(
       modeID: json['ModeID'],
       modeName: json['ModeName'],
     );
@@ -15,11 +15,16 @@ class CommunicationMode {
     return {'ModeID': modeID, 'ModeName': modeName};
   }
 
-  factory CommunicationMode.fromMap(Map<String, dynamic> map) {
-    return CommunicationMode(modeID: map['ModeID'], modeName: map['ModeName']);
+  factory CommunicationModeModel.fromMap(Map<String, dynamic> map) {
+    return CommunicationModeModel(
+      modeID: map['ModeID'],
+      modeName: map['ModeName'],
+    );
   }
 
   Map<String, dynamic> toMap() {
     return {'ModeID': modeID, 'ModeName': modeName};
   }
+
+  static List<CommunicationModeModel> communicationModeList = [];
 }

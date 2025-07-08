@@ -44,4 +44,6 @@ class VerticalModel {
       'ListAbbreviation': listAbbreviation,
     };
   }
+
+  static List<VerticalModel> verticalList = [];
 }

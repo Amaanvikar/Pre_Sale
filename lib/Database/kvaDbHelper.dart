@@ -31,7 +31,7 @@ class KvaDBHelper {
     );
   }
 
-  Future<void> insertKVA(KVA kva) async {
+  Future<void> insertKVA(KVAModel kva) async {
     final db = await database;
     await db.insert(
       'kva_table',
@@ -40,7 +40,7 @@ class KvaDBHelper {
     );
   }
 
-  Future<void> insertAllKVA(List<KVA> kvaList) async {
+  Future<void> insertAllKVA(List<KVAModel> kvaList) async {
     final db = await database;
     final batch = db.batch();
     for (var kva in kvaList) {
@@ -53,10 +53,10 @@ class KvaDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<KVA>> getAllKVA() async {
+  Future<List<KVAModel>> getAllKVA() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('kva_table');
-    return List.generate(maps.length, (i) => KVA.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => KVAModel.fromMap(maps[i]));
   }
 
   Future<void> clearAllKVA() async {

@@ -19,4 +19,6 @@ class HPModel {
   Map<String, dynamic> toMap() {
     return {'HPID': hpid, 'HP': hp};
   }
+
+  static List<HPModel> HPList = [];
 }

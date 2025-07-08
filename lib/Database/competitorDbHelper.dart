@@ -31,7 +31,7 @@ class CompetitorDBHelper {
     );
   }
 
-  Future<void> insertCompetitor(Competitor competitor) async {
+  Future<void> insertCompetitor(competitorModel competitor) async {
     final db = await database;
     await db.insert(
       'competitors',
@@ -40,7 +40,7 @@ class CompetitorDBHelper {
     );
   }
 
-  Future<void> insertAllCompetitors(List<Competitor> competitors) async {
+  Future<void> insertAllCompetitors(List<competitorModel> competitors) async {
     final db = await database;
     final batch = db.batch();
     for (var competitor in competitors) {
@@ -53,10 +53,10 @@ class CompetitorDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<Competitor>> getAllCompetitors() async {
+  Future<List<competitorModel>> getAllCompetitors() async {
     final db = await database;
     final result = await db.query('competitors');
-    return result.map((e) => Competitor.fromMap(e)).toList();
+    return result.map((e) => competitorModel.fromMap(e)).toList();
   }
 
   Future<void> clearCompetitors() async {

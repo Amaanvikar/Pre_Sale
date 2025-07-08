@@ -32,7 +32,7 @@ class CommunicationModeDBHelper {
     );
   }
 
-  Future<void> insertMode(CommunicationMode mode) async {
+  Future<void> insertMode(CommunicationModeModel mode) async {
     final db = await database;
     await db.insert(
       'communication_modes',
@@ -41,7 +41,7 @@ class CommunicationModeDBHelper {
     );
   }
 
-  Future<void> insertAllModes(List<CommunicationMode> modes) async {
+  Future<void> insertAllModes(List<CommunicationModeModel> modes) async {
     final db = await database;
     final batch = db.batch();
     for (var mode in modes) {
@@ -54,10 +54,10 @@ class CommunicationModeDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<CommunicationMode>> getAllModes() async {
+  Future<List<CommunicationModeModel>> getAllModes() async {
     final db = await database;
     final result = await db.query('communication_modes');
-    return result.map((e) => CommunicationMode.fromMap(e)).toList();
+    return result.map((e) => CommunicationModeModel.fromMap(e)).toList();
   }
 
   Future<void> clearModes() async {

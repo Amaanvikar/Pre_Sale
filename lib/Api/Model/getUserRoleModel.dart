@@ -55,20 +55,20 @@ class UserRole {
 
   factory UserRole.fromMap(Map<String, dynamic> map) {
     return UserRole(
-      userId: map['UserId'],
-      roleId: map['RoleID'],
-      roleName: map['RoleName'],
-      roleLevelId: map['RoleLevelID'],
-      roleLevelName: map['RoleLevelName'],
-      verticalId: map['VerticalID'],
-      verticalName: map['VerticalName'],
-      hierarchy: map['Hierarchy'],
-      isExcelDownload: map['IsExcelDownload'] == 1,
-      isPdfDownload: map['IsPDFDownload'] == 1,
+      userId: map['UserId'] ?? 0,
+      roleId: map['RoleID'] ?? 0,
+      roleName: map['RoleName'] ?? '',
+      roleLevelId: map['RoleLevelID'] ?? 0,
+      roleLevelName: map['RoleLevelName'] ?? '',
+      verticalId: map['VerticalID'] ?? 0,
+      verticalName: map['VerticalName'] ?? '',
+      hierarchy: map['Hierarchy'] ?? 0,
+      isExcelDownload: (map['IsExcelDownload'] ?? 0) == 1,
+      isPdfDownload: (map['IsPDFDownload'] ?? 0) == 1,
     );
   }
-  @override
-  String toString() {
-    return 'UserRole(roleId: $roleId, roleName: $roleName, vertical: $verticalName)';
-  }
+
+  Map<String, dynamic> toMap() => toJson();
+
+  static List<UserRole> userRoleList = [];
 }

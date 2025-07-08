@@ -1,11 +1,11 @@
-class Competitor {
+class competitorModel {
   final int competitorID;
   final String competitorName;
 
-  Competitor({required this.competitorID, required this.competitorName});
+  competitorModel({required this.competitorID, required this.competitorName});
 
-  factory Competitor.fromJson(Map<String, dynamic> json) {
-    return Competitor(
+  factory competitorModel.fromJson(Map<String, dynamic> json) {
+    return competitorModel(
       competitorID: json['CompetitorID'],
       competitorName: json['CompetitorName'],
     );
@@ -15,8 +15,8 @@ class Competitor {
     return {'CompetitorID': competitorID, 'CompetitorName': competitorName};
   }
 
-  factory Competitor.fromMap(Map<String, dynamic> map) {
-    return Competitor(
+  factory competitorModel.fromMap(Map<String, dynamic> map) {
+    return competitorModel(
       competitorID: map['CompetitorID'],
       competitorName: map['CompetitorName'],
     );
@@ -25,4 +25,6 @@ class Competitor {
   Map<String, dynamic> toMap() {
     return {'CompetitorID': competitorID, 'CompetitorName': competitorName};
   }
+
+  static List<competitorModel> competitorList = [];
 }

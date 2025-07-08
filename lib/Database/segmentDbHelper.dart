@@ -31,7 +31,7 @@ class SegmentDBHelper {
     );
   }
 
-  Future<void> insertSegment(Segment segment) async {
+  Future<void> insertSegment(SegmentModel segment) async {
     final db = await database;
     await db.insert(
       'segments',
@@ -40,7 +40,7 @@ class SegmentDBHelper {
     );
   }
 
-  Future<void> insertAllSegments(List<Segment> segments) async {
+  Future<void> insertAllSegments(List<SegmentModel> segments) async {
     final db = await database;
     final batch = db.batch();
     for (var seg in segments) {
@@ -53,10 +53,10 @@ class SegmentDBHelper {
     await batch.commit(noResult: true);
   }
 
-  Future<List<Segment>> getAllSegments() async {
+  Future<List<SegmentModel>> getAllSegments() async {
     final db = await database;
     final result = await db.query('segments');
-    return result.map((e) => Segment.fromMap(e)).toList();
+    return result.map((e) => SegmentModel.fromMap(e)).toList();
   }
 
   Future<void> clearSegments() async {

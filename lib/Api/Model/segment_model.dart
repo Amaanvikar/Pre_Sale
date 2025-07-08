@@ -1,11 +1,11 @@
-class Segment {
+class SegmentModel {
   final int segmentID;
   final String segmentName;
 
-  Segment({required this.segmentID, required this.segmentName});
+  SegmentModel({required this.segmentID, required this.segmentName});
 
-  factory Segment.fromJson(Map<String, dynamic> json) {
-    return Segment(
+  factory SegmentModel.fromJson(Map<String, dynamic> json) {
+    return SegmentModel(
       segmentID: json['SegmentID'],
       segmentName: json['SegmentName'],
     );
@@ -15,8 +15,8 @@ class Segment {
     return {'SegmentID': segmentID, 'SegmentName': segmentName};
   }
 
-  factory Segment.fromMap(Map<String, dynamic> map) {
-    return Segment(
+  factory SegmentModel.fromMap(Map<String, dynamic> map) {
+    return SegmentModel(
       segmentID: map['SegmentID'],
       segmentName: map['SegmentName'],
     );
@@ -25,4 +25,6 @@ class Segment {
   Map<String, dynamic> toMap() {
     return {'SegmentID': segmentID, 'SegmentName': segmentName};
   }
+
+  static List<SegmentModel> segmentList = [];
 }

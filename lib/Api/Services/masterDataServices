@@ -6,10 +6,6 @@ import 'package:presale/Api/Helper/constant.dart';
 import 'package:presale/Database/verticalDbHelper.dart';    
 import 'package:presale/Api/Model/vertical_model.dart';
 
-
-
-
-
 class MasterDataService {
   static Future<void> syncAllMasterData() async {
     final List<String> refKeywords = [
@@ -50,7 +46,7 @@ class MasterDataService {
 
     final body = {
       "refKeyword": refKeyword,
-      "isActive": 0,
+      "isActive": 1,
       "id": 0,
       "pinCodeID": 0,
       "transSMSID": 0,
