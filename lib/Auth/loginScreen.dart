@@ -77,8 +77,12 @@ class LoginPageState extends State<LoginPage> {
             data['data'] is List &&
             data['data'].isNotEmpty &&
             data['data'][0]?['LoginStatus'] == 1) {
-          final userId = data['data'][0]?['UserId'] ?? 'User';
-          await SharedPreferenceHelper.setUserId(userId);
+          final userId = int.tryParse(
+            data['data'][0]?['UserId'].toString() ?? '',
+          );
+          if (userId != null) {
+            await SharedPreferenceHelper.setUserId(userId);
+          }
 
           final roles = await UserService.fetchUserRoles(username);
           print("user role: $roles");
