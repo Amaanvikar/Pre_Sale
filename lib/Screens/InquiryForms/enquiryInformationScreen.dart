@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:presale/Api/Helper/appDatabase.dart';
 import 'package:presale/Api/Helper/constant.dart';
-import 'package:presale/Database/customerTypeDbHelper.dart';
-import 'package:presale/Database/dealByDbHelper.dart';
-import 'package:presale/Database/segmentDbHelper.dart';
-import 'package:presale/Database/verticalDbHelper.dart';
 import 'package:presale/Screens/InquiryForms/productInformationScreen.dart';
+
+// import 'package:presale/Database/customerTypeDbHelper.dart';
+// import 'package:presale/Database/dealByDbHelper.dart';
+// import 'package:presale/Database/segmentDbHelper.dart';
+// import 'package:presale/Database/verticalDbHelper.dart';
 
 class EnquiryFromScreen extends StatefulWidget {
   const EnquiryFromScreen({super.key});
@@ -23,6 +25,8 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   List<String> segmentOptions = [];
   List<String> dealByOptions = [];
   List<String> customerTypeOptions = [];
+  List<String> sourceOptions = [];
+  List<String> communicationModeOptions = [];
 
   final List<String> selectOptions = ['Select'];
   final List<String> categoryOptions = ['Individual', 'Corporate'];
@@ -30,14 +34,16 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   // Form field values
   String? vertical;
   String? enquiryNo;
-  String? communicationMode = 'Retail';
   String? segment;
+  String? communicationMode;
   String? subSegment;
   DateTime enquiryDate = DateTime.now();
   String? source;
   String? dealBy;
   String? customerType;
   String? category = 'Individual';
+
+  final db = AppDatabase(); // Use centralized DB helper
 
   // Date picker
   Future<void> _pickDateTime() async {
@@ -75,24 +81,20 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
     _loadSegments();
     _loadDealBy();
     _loadCustomerTypes();
+    _loadSource();
+    _loadCommunicationModes();
   }
 
   Future<void> _loadVerticals() async {
-    final verticalList = await VerticalDBHelper().getAllVerticals();
-
+    final verticalList = await db.getAllVerticals();
     setState(() {
       verticalOptions = verticalList.map((v) => v.verticalName).toList();
-
-      if (verticalOptions.isNotEmpty) {
-        vertical = verticalOptions.first;
-      } else {
-        vertical = null;
-      }
+      vertical = verticalOptions.isNotEmpty ? verticalOptions.first : null;
     });
   }
 
   Future<void> _loadSegments() async {
-    final segmentList = await SegmentDBHelper().getAllSegments();
+    final segmentList = await db.getAllSegments();
     setState(() {
       segmentOptions = segmentList.map((e) => e.segmentName).toList();
       segment = segmentOptions.isNotEmpty ? segmentOptions.first : null;
@@ -100,7 +102,7 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   }
 
   Future<void> _loadDealBy() async {
-    final dealByList = await DealByDBHelper().getAllDealBy();
+    final dealByList = await db.getAllDealBy();
     setState(() {
       dealByOptions = dealByList.map((e) => e.employeeName).toList();
       dealBy = dealByOptions.isNotEmpty ? dealByOptions.first : null;
@@ -108,12 +110,32 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   }
 
   Future<void> _loadCustomerTypes() async {
-    final customerTypeList = await CustomerTypeDBHelper().getAllCustomerTypes();
+    final customerTypeList = await db.getAllCustomerTypes();
     setState(() {
       customerTypeOptions =
           customerTypeList.map((e) => e.customerTypeName).toList();
       customerType =
           customerTypeOptions.isNotEmpty ? customerTypeOptions.first : null;
+    });
+  }
+
+  Future<void> _loadSource() async {
+    final sourceList = await db.getAllSources();
+    setState(() {
+      sourceOptions = sourceList.map((e) => e.sourceName).toList();
+      source = sourceOptions.isNotEmpty ? sourceOptions.first : null;
+    });
+  }
+
+  Future<void> _loadCommunicationModes() async {
+    final communicationModeList = await db.getAllCommunicationModes();
+    setState(() {
+      communicationModeOptions =
+          communicationModeList.map((e) => e.modeName).toList();
+      communicationMode =
+          communicationModeOptions.isNotEmpty
+              ? communicationModeOptions.first
+              : null;
     });
   }
 
@@ -150,14 +172,13 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 selectedCategory,
                 (val) => setState(() => selectedCategory = val!),
               ),
-
               _buildTextField(
                 "Enquiry no",
                 (val) => setState(() => enquiryNo = val),
               ),
               _buildDropdown(
                 "Communication mode",
-                ['Retail'],
+                communicationModeOptions,
                 communicationMode,
                 (val) => setState(() => communicationMode = val),
               ),
@@ -176,7 +197,7 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
               _buildDateTimePicker("Enquiry Date"),
               _buildDropdown(
                 "Source",
-                selectOptions,
+                sourceOptions,
                 source,
                 (val) => setState(() => source = val),
               ),
@@ -204,23 +225,14 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      // Navigation without validation
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => EnquiryFromScreen2(),
                         ),
                       );
-                      // if (_formKey.currentState!.validate()) {
-                      //   _formKey.currentState!.save();
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => EnquiryFromScreen2(),
-                      //     ),
-                      //   );
-                      // }
                     },
-
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPrimaryColor,
                       shape: RoundedRectangleBorder(),

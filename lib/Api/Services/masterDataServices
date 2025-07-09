@@ -1,44 +1,88 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:presale/Api/Helper/appDatabase.dart';
 
 import 'package:presale/Api/ApiEndPoints/apiEndPoints.dart';
 import 'package:presale/Api/Helper/constant.dart';
 import 'package:presale/Database/verticalDbHelper.dart';    
 import 'package:presale/Api/Model/vertical_model.dart';
+import 'package:presale/Api/Model/dealer_employe_model.dart'; 
+import 'package:presale/Api/Model/ccustomer_type_model.dart';  
+import 'package:presale/Database/sourceDbHelper.dart';
+import 'package:presale/Database/segmentDbHelper.dart';
+import 'package:presale/Database/dealByDbHelper.dart';
+import 'package:presale/Database/customerTypeDbHelper.dart';
+import 'package:presale/Api/Model/segment_model.dart';
+import 'package:presale/Api/Model/source_model.dart';
+import 'package:presale/Api/Model/communication_mode_model.dart';
+
+
 
 class MasterDataService {
   static Future<void> syncAllMasterData() async {
-    final List<String> refKeywords = [
-      'Vertical',
-      'Segment',
-      'SubSegment',
-      'DealBy',
-      'Source',
-      'CustomerType'
-      // Add more as needed
-    ];
+  final db = AppDatabase(); // Centralized database helper
 
-    for (var refKeyword in refKeywords) {
-      final data = await fetchMasterData(refKeyword);
-      print(" Synced $refKeyword: ${data.length} items");
+  final List<String> refKeywords = [
+    'Vertical',
+    'Segment',
+    'SubSegment',
+    'DealBy',
+    'ENQUIRYSOURCE',
+    'CustomerType',
+    'ENQUIRYMODE'
+    // Add more as needed
+  ];
 
-       if (refKeyword == 'Vertical' && data.isNotEmpty) {
+  for (var refKeyword in refKeywords) {
+    final data = await fetchMasterData(refKeyword);
+    print("Synced $refKeyword: ${data.length} items");
+
+    if (refKeyword == 'Vertical' && data.isNotEmpty) {
       final verticalList = data.map((json) => VerticalModel.fromJson(json)).toList();
-
-      // Optionally clear old data
-      await VerticalDBHelper().clearVerticals();
-
-      // Insert new data
-      await VerticalDBHelper().insertAllVerticals(verticalList);
-
+      await db.clearVerticals();
+      await db.insertAllVerticals(verticalList);
       print("${verticalList.length} verticals saved to local DB");
     }
 
+    if (refKeyword == 'Segment' && data.isNotEmpty) {
+      final segmentList = data.map((json) => SegmentModel.fromJson(json)).toList();
+      await db.clearSegments();
+      await db.insertAllSegments(segmentList);
+      print("${segmentList.length} segments saved to local DB");
+    }
+
+    if (refKeyword == 'ENQUIRYSOURCE' && data.isNotEmpty) {
+      final sourceList = data.map((json) => SourceModel.fromJson(json)).toList();
+      await db.clearSources();
+      await db.insertAllSources(sourceList);
+      print("${sourceList.length} sources saved to local DB");
+    }
+
+    if (refKeyword == 'DealBy' && data.isNotEmpty) {
+      final dealByList = data.map((json) => DealByModel.fromJson(json)).toList();
+      await db.clearDealBy();
+      await db.insertAllDealBy(dealByList);
+      print("${dealByList.length} DealBy items saved to local DB");
+    }
+
+    if (refKeyword == 'CustomerType' && data.isNotEmpty) {
+      final customerTypeList = data.map((json) => CustomerTypeModel.fromJson(json)).toList();
+      await db.clearCustomerTypes();
+      await db.insertAllCustomerTypes(customerTypeList);
+      print("${customerTypeList.length} CustomerTypes saved to local DB");
+    }
+
+    if (refKeyword == 'ENQUIRYMODE' && data.isNotEmpty) {
+      final communicationModeList = data.map((json) => CommunicationModeModel.fromJson(json)).toList();
+      await db.clearCommunicationModes();
+      await db.insertAllCommunicationModes(communicationModeList);
+      print("${communicationModeList.length} EnquiryMode saved to local DB");
+    }
   }
 
-      // Optionally store in DB
-      // await DBHelper.insertMasterData(refKeyword, data);
-    }
+  
+}
+
   
 
   static Future<List<Map<String, dynamic>>> fetchMasterData(String refKeyword) async {
