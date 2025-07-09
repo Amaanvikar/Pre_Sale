@@ -165,13 +165,13 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
                 vertical,
                 (val) => setState(() => vertical = val),
               ),
-              _buildTextField("Title", (val) => titleController.text = val!),
-              _buildDropdown(
-                "Category",
-                ['Individual', 'Corporate'],
-                selectedCategory,
-                (val) => setState(() => selectedCategory = val!),
-              ),
+              // _buildTextField("Title", (val) => titleController.text = val!),
+              // _buildDropdown(
+              //   "Category",
+              //   ['Individual', 'Corporate'],
+              //   selectedCategory,
+              //   (val) => setState(() => selectedCategory = val!),
+              // ),
               _buildTextField(
                 "Enquiry no",
                 (val) => setState(() => enquiryNo = val),

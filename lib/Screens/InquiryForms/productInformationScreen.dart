@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presale/Api/Helper/appDatabase.dart';
 import 'package:presale/Api/Helper/constant.dart';
 import 'package:presale/Screens/InquiryForms/customerInformationScreen.dart';
 
@@ -12,6 +13,8 @@ class EnquiryFromScreen2 extends StatefulWidget {
 class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
   final _formKey = GlobalKey<FormState>();
 
+  List<String> typeofOwnershipOptions = [];
+
   // Form field values
   String? kva = '';
   String? ratingType;
@@ -19,10 +22,30 @@ class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
   String? phase;
   String? panel;
   String? quantity;
-  String? typeOfOwnership;
+  String? typeofOwnership;
+
+  final db = AppDatabase();
 
   // Dropdown Options
   final List<String> selectOptions = ['Select'];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTypeofOwnership();
+  }
+
+  Future<void> _loadTypeofOwnership() async {
+    final typeofOwnershipList = await db.getAllDGOwnerships();
+    setState(() {
+      typeofOwnershipOptions =
+          typeofOwnershipList.map((e) => e.dgOwnershipName).toList();
+      typeofOwnership =
+          typeofOwnershipOptions.isNotEmpty
+              ? typeofOwnershipOptions.first
+              : null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +74,8 @@ class _EnquiryFromScreen2State extends State<EnquiryFromScreen2> {
               _buildTextField("Quanity", (val) => quantity = val),
               _buildDropdown(
                 "Type of Ownership",
-                selectOptions,
-                (val) => typeOfOwnership = val,
+                typeofOwnershipOptions,
+                (val) => setState(() => typeofOwnership = val),
               ),
               SizedBox(height: 20),
               Row(

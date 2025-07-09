@@ -67,6 +67,10 @@ class UserRole {
       isPdfDownload: (map['IsPDFDownload'] ?? 0) == 1,
     );
   }
+  @override
+  String toString() {
+    return 'UserRole(roleId: $roleId, roleName: $roleName)';
+  }
 
   Map<String, dynamic> toMap() => toJson();
 

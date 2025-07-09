@@ -1,4 +1,5 @@
 import 'package:presale/Api/Model/communication_mode_model.dart';
+import 'package:presale/Api/Model/ownershipTypeModel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -101,6 +102,20 @@ class AppDatabase {
         ModeName TEXT
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE dg_ownerships (
+        DGOwnerShipID INTEGER PRIMARY KEY,
+        DGOwnerShipName TEXT
+      )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE competitor (
+      CompetitorID INTEGER PRIMARY KEY,
+      CompetitorName TEXT
+    )
+  ''');
   }
 
   // ---------- Vertical ----------
@@ -422,5 +437,30 @@ class AppDatabase {
   Future<void> clearCommunicationModes() async {
     final db = await database;
     await db.delete('communication_modes');
+  }
+
+  // ---------- DG Ownership ----------
+  Future<void> insertAllDGOwnerships(List<DGOwnershipModel> ownerships) async {
+    final db = await database;
+    final batch = db.batch();
+    for (var item in ownerships) {
+      batch.insert(
+        'dg_ownerships',
+        item.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  Future<List<DGOwnershipModel>> getAllDGOwnerships() async {
+    final db = await database;
+    final result = await db.query('dg_ownerships');
+    return result.map((e) => DGOwnershipModel.fromMap(e)).toList();
+  }
+
+  Future<void> clearDGOwnerships() async {
+    final db = await database;
+    await db.delete('dg_ownerships');
   }
 }

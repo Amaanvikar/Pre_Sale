@@ -4,18 +4,14 @@ import 'package:presale/Api/Helper/appDatabase.dart';
 
 import 'package:presale/Api/ApiEndPoints/apiEndPoints.dart';
 import 'package:presale/Api/Helper/constant.dart';
-import 'package:presale/Database/verticalDbHelper.dart';    
 import 'package:presale/Api/Model/vertical_model.dart';
 import 'package:presale/Api/Model/dealer_employe_model.dart'; 
 import 'package:presale/Api/Model/ccustomer_type_model.dart';  
-import 'package:presale/Database/sourceDbHelper.dart';
-import 'package:presale/Database/segmentDbHelper.dart';
-import 'package:presale/Database/dealByDbHelper.dart';
-import 'package:presale/Database/customerTypeDbHelper.dart';
 import 'package:presale/Api/Model/segment_model.dart';
 import 'package:presale/Api/Model/source_model.dart';
 import 'package:presale/Api/Model/communication_mode_model.dart';
-
+import 'package:presale/Api/Model/ownershipTypeModel.dart';
+import 'package:presale/Api/Model/competitor_model.dart';
 
 
 class MasterDataService {
@@ -30,6 +26,7 @@ class MasterDataService {
     'ENQUIRYSOURCE',
     'CustomerType',
     'ENQUIRYMODE'
+    'COMPETITORNAMEFORMARKETSHARE'
     // Add more as needed
   ];
 
@@ -78,13 +75,24 @@ class MasterDataService {
       await db.insertAllCommunicationModes(communicationModeList);
       print("${communicationModeList.length} EnquiryMode saved to local DB");
     }
+
+
+    if (refKeyword == 'DGOWNERSHIP' && data.isNotEmpty) {
+      final typeofOwnershipList = data.map((json) => DGOwnershipModel.fromJson(json)).toList();
+      await db.clearDGOwnerships();
+      await db.insertAllDGOwnerships(typeofOwnershipList);
+      print("${typeofOwnershipList.length} typeofOwnership saved to local DB");
+    }
+
+
+    if (refKeyword == 'COMPETITORNAMEFORMARKETSHARE' && data.isNotEmpty) {
+      final competitorList = data.map((json) => competitorModel.fromJson(json)).toList();
+      await db.clearCompetitors();
+      await db.insertAllCompetitors(competitorList);
+      print("${competitorList.length} Competitors saved to local DB");
+    }
   }
-
-  
 }
-
-  
-
   static Future<List<Map<String, dynamic>>> fetchMasterData(String refKeyword) async {
     final url = Uri.parse(ApiEndPoints.getAllMasterData);
 
