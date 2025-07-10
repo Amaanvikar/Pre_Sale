@@ -1,5 +1,6 @@
 import 'package:presale/Api/Model/communication_mode_model.dart';
 import 'package:presale/Api/Model/ownershipTypeModel.dart';
+import 'package:presale/Api/Model/subSegmentModel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -50,6 +51,14 @@ class AppDatabase {
     await db.execute('''
       CREATE TABLE segments (
         SegmentID INTEGER PRIMARY KEY,
+        SegmentName TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE sub_segments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+        SegmentID INTEGER,
         SegmentName TEXT
       )
     ''');
@@ -218,6 +227,33 @@ class AppDatabase {
   Future<void> clearSegments() async {
     final db = await database;
     await db.delete('segments');
+  }
+
+  Future<void> syncSubSegments(
+    List<Map<String, dynamic>> subSegmentData,
+  ) async {
+    final db = await database;
+    await db.delete('sub_segments');
+
+    for (var item in subSegmentData) {
+      await db.insert('sub_segments', {
+        'segment_id': item['SegmentID'],
+        'sub_segment_name': item['SubSegmentName'],
+      });
+    }
+
+    print("${subSegmentData.length} subsegments saved to local DB");
+  }
+
+  Future<List<subSegmentModel>> getSubSegmentsBySegmentId(int segmentId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'sub_segments',
+      where: 'segment_id = ?',
+      whereArgs: [segmentId],
+    );
+
+    return maps.map((map) => subSegmentModel.fromMap(map)).toList();
   }
 
   // ---------- Panel Product ----------

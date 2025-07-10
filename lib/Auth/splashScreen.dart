@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:presale/Api/Helper/sharedPreferences.dart';
 import 'package:presale/Auth/loginScreen.dart';
+import 'package:presale/Screens/dashboardScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,14 +21,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkLoginStatus() async {
     await Future.delayed(const Duration(seconds: 2)); // Splash delay
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? roleId = prefs.getInt('roleId'); // fetch userId
+    bool isLoggedIn = await SharedPreferenceHelper.isLoggedIn();
+    int? userId = await SharedPreferenceHelper.getUserId();
 
     if (!mounted) return;
 
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    if (isLoggedIn) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
+      );
+    } else {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 
   @override

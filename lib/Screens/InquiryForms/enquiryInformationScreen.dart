@@ -43,7 +43,10 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
   String? customerType;
   String? category = 'Individual';
 
-  final db = AppDatabase(); // Use centralized DB helper
+  final db = AppDatabase(); // centralized DB helper
+
+  Map<String, int> segmentNameToIdMap = {};
+  List<String> subSegmentOptions = [];
 
   // Date picker
   Future<void> _pickDateTime() async {
@@ -97,8 +100,34 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
     final segmentList = await db.getAllSegments();
     setState(() {
       segmentOptions = segmentList.map((e) => e.segmentName).toList();
+      segmentNameToIdMap = {
+        for (var e in segmentList) e.segmentName: e.segmentID,
+      };
       segment = segmentOptions.isNotEmpty ? segmentOptions.first : null;
+      if (segment != null) {
+        _loadSubSegmentsForSegment(segment!);
+      }
     });
+  }
+
+  Future<void> _loadSubSegmentsForSegment(String selectedSegment) async {
+    final segmentId = segmentNameToIdMap[selectedSegment];
+    if (segmentId == null) {
+      print(" Segment ID not found for $selectedSegment");
+      return;
+    }
+
+    print("🔍 Fetching SubSegments from DB for Segment ID: $segmentId");
+
+    final subSegmentList = await db.getSubSegmentsBySegmentId(segmentId);
+
+    setState(() {
+      subSegmentOptions = subSegmentList.map((e) => e.subSegmentName).toList();
+      subSegment =
+          subSegmentOptions.isNotEmpty ? subSegmentOptions.first : null;
+    });
+
+    print("Loaded ${subSegmentOptions.length} sub-segments from local DB.");
   }
 
   Future<void> _loadDealBy() async {
@@ -190,7 +219,7 @@ class _EnquiryFromScreenState extends State<EnquiryFromScreen> {
               ),
               _buildDropdown(
                 "Sub Segment",
-                selectOptions,
+                subSegmentOptions,
                 subSegment,
                 (val) => subSegment = val,
               ),

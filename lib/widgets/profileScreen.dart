@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     final db = DBHelper();
-    final roles = await db.getRolesByUserId(currentUserId!);
+    final roles = await db.getRolesByUserId(currentUserId);
     print("Roles fetched from DB for user $currentUserId: ${roles.length}");
 
     setState(() {
@@ -93,11 +93,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  if (roleName != null)
+                    Text(
+                      "$roleName (ID: $roleId)",
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
 
+            // Roles
             if (allUserRoles.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(12.0),
@@ -110,6 +119,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ...allUserRoles.map((role) => _buildRoleCard(role)),
 
             const SizedBox(height: 20),
+
+            // Logout Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: ElevatedButton.icon(
@@ -134,13 +145,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Build single role card
   Widget _buildRoleCard(UserRole role) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

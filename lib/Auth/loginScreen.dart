@@ -72,20 +72,14 @@ class LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print("🔍 Login API response: ${response.body}");
 
         if (data['success'] == true &&
             data['data'] is List &&
             data['data'].isNotEmpty &&
             data['data'][0]?['LoginStatus'] == 1) {
-          final userId = int.tryParse(
-            data['data'][0]?['UserId'].toString() ?? '',
-          );
-          if (userId != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setInt('userId', userId);
-          }
-
-          final roles = await UserService.fetchUserRoles(username);
+          // 🔄 Fetch user roles, this will save UserId and logged-in status
+          final roles = await fetchUserRoles(username);
           print("user role: $roles");
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -106,6 +100,7 @@ class LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(message?.toString() ?? 'Login successful')),
           );
+
           if (rememberMe) {
             await prefs.setBool('rememberMe', true);
             await prefs.setString('username', username);
@@ -114,14 +109,10 @@ class LoginPageState extends State<LoginPage> {
 
           setState(() => _isLoading = false);
 
-          try {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => DashboardScreen()),
-            );
-          } catch (e) {
-            print("Navigation error: $e");
-          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => DashboardScreen()),
+          );
         } else {
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -147,7 +138,7 @@ class LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<List<dynamic>> fetchUserRoles(String loginId) async {
+  Future<List<UserRole>> fetchUserRoles(String loginId) async {
     final url = Uri.parse(ApiEndPoints.getUserRole);
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode({"loginId": loginId});
@@ -158,31 +149,40 @@ class LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
+        final rolesData = result['data'];
 
-        print("Decoded 'data' field: ${result['data']}");
+        if (result['success'] == true &&
+            rolesData is List &&
+            rolesData.isNotEmpty) {
+          // ✅ Extract and save UserId from first role object
+          final userId = rolesData[0]['UserId'];
+          if (userId != null) {
+            await SharedPreferenceHelper.setUserId(userId);
+            await SharedPreferenceHelper.setLoggedIn(true);
+            print("✅ Saved userId: $userId");
+          } else {
+            print("❌ Failed to save userId: $userId");
+          }
 
-        if (result['success'] == true && result['data'] is List) {
-          final roles =
-              (result['data'] as List)
-                  .map((roleJson) => UserRole.fromJson(roleJson))
-                  .toList();
+          // ✅ Convert and store roles
+          final roles = rolesData.map((e) => UserRole.fromJson(e)).toList();
 
           final db = DBHelper();
           await db.clearAllRoles();
           for (var role in roles) {
             await db.insertUserRole(role);
           }
-          print("${roles.length} user roles saved to local DB.");
+          print("✅ ${roles.length} user roles saved to local DB.");
+
+          return roles;
         } else {
-          print(
-            "fetchUserRoles error: API call succeeded but returned unexpected data format.",
-          );
+          print("❌ No valid role data found.");
         }
       } else {
-        print("fetchUserRoles error: Status ${response.statusCode}");
+        print("❌ fetchUserRoles error: Status ${response.statusCode}");
       }
     } catch (e) {
-      print("fetchUserRoles exception: $e");
+      print("❌ fetchUserRoles exception: $e");
     }
 
     return [];
